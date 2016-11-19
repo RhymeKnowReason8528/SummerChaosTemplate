@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,16 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Created by RobotK on 10/27/2016.
  */
 
-@TeleOp (name = "MecanumTeleOp")
-public class BasicTeleOp extends OpMode{
+@TeleOp (name = "TeleOp")
+public class BasicTeleOp extends LinearOpMode {
 
     private Robot myRobot = null;
-
-    @Override
-    public void init() {
-        myRobot = new Robot();
-        myRobot.init(hardwareMap);
-    }
 
     public void mecanumDrive(double x1, double y1, double x2) {
         x1 = scaleInput(x1);
@@ -53,34 +48,45 @@ public class BasicTeleOp extends OpMode{
     }
 
     @Override
-    public void loop() {
-        mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+    public void runOpMode() {
+        myRobot = new Robot();
+        myRobot.init(hardwareMap);
 
-        if(gamepad1.right_bumper) {
-            myRobot.collectorMotor.setPower(-1);
-        } else {
-            myRobot.collectorMotor.setPower(0);
-        }
+        waitForStart();
 
-        if(gamepad1.b) {
-            myRobot.launcherMotor.setPower(1);
-        } else {
-            myRobot.launcherMotor.setPower(0);
-        }
+        while (opModeIsActive()) {
+            mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-        if(gamepad1.left_bumper) {
-            myRobot.engageLauncher();
-        } else if(gamepad1.left_trigger > 0) {
-            myRobot.disengageLauncher();
-        }
+            if(gamepad1.right_bumper) {
+                myRobot.collectorMotor.setPower(-1);
+            } else {
+                myRobot.collectorMotor.setPower(0);
+            }
 
-        if(gamepad1.x) {
-            myRobot.lockLauncher(this);
-        } else if (gamepad1.y) {
-            myRobot.disengageLauncher();
+            if(gamepad1.b) {
+                myRobot.launcherMotor.setPower(1);
+            } else {
+                myRobot.launcherMotor.setPower(0);
+            }
+
+            if(gamepad1.left_bumper) {
+                myRobot.engageLauncher();
+            } else if(gamepad1.left_trigger > 0) {
+                myRobot.disengageLauncher();
+            }
+
+
+            if(gamepad1.x) {
+                myRobot.lockLauncher(this);
+            } else if (gamepad1.y) {
+                myRobot.disengageLauncher();
+            }
+            telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
+            telemetry.addData("Servo position", myRobot.launcherServo.getPosition());
+            telemetry.update();
+
+            myRobot.waitForTick(40);
         }
-        telemetry.addData("Servo position", myRobot.launcherServo.getPosition());
-        telemetry.update();
     }
 
     private double scaleInput(double dVal) {

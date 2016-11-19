@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.text.method.Touch;
+import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -47,7 +46,7 @@ public class Robot {
     private ElapsedTime period  = new ElapsedTime();
 
     double encoderSubtractor;
-    double launcherTimeout;
+    double beginingTime;
 
     /* Constructor */
     public Robot() {
@@ -154,17 +153,23 @@ public class Robot {
         launcherServo.setPosition(1);
     }
 
-    public void lockLauncher(OpMode opmode) {
+    public boolean lockLauncher(LinearOpMode opmode) {
         engageLauncher();
         waitForTick(500);
 
-        launcherTimeout = opmode.getRuntime();
+        beginingTime = opmode.getRuntime();
 
-        while(!launcherLimitTouchSensor.isPressed() && opmode.getRuntime() < launcherTimeout + 5) {
-           // launcherMotor.setPower(1);
+        while(!launcherLimitTouchSensor.isPressed() && opmode.getRuntime() < beginingTime + 1.67 && opmode.opModeIsActive()) {
+            launcherMotor.setPower(1);
             opmode.telemetry.addData("status", "Pulling back");
+            opmode.telemetry.update();
         }
         launcherMotor.setPower(0);
         opmode.telemetry.addData("status", "Launcher ready to fire");
+        opmode.telemetry.update();
+
+        Log.i("RKR", "Pullback took " + (opmode.getRuntime() - beginingTime));
+
+        return launcherLimitTouchSensor.isPressed();
     }
 }

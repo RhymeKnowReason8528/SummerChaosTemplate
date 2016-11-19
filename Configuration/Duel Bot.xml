@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <MotorController name="Right Drive Controller" serialNumber="AL00XUHO">
+        <Motor name="right_front_drive" port="1" />
+        <Motor name="right_rear_drive" port="2" />
+    </MotorController>
+    <MotorController name="Left Drive Controller" serialNumber="AL00VVUW">
+        <Motor name="left_front_drive" port="1" />
+        <Motor name="left_rear_drive" port="2" />
+    </MotorController>
+    <DeviceInterfaceModule name="Device Interface Module 1" serialNumber="AL00VCZV">
+        <TouchSensor name="launcher_limit_sensor" port="0" />
+    </DeviceInterfaceModule>
+    <ServoController name="Servo Controller" serialNumber="AI02QTJ6">
+        <Servo name="launcher_servo" port="1" />
+    </ServoController>
+    <MotorController name="Accessory Controller One" serialNumber="AL00VV65">
+        <Motor name="collector" port="1" />
+        <Motor name="launcher_motor" port="2" />
+    </MotorController>
+</Robot>

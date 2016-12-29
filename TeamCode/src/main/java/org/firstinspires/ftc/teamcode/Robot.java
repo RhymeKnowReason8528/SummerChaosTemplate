@@ -149,24 +149,33 @@ public class Robot {
         launcherServo.setPosition(0.1);
     }
 
-    public void disengageLauncher() {
+    public void disengageLauncher(LinearOpMode opmode, boolean initMethod) {
         launcherServo.setPosition(1);
+        lockLauncher(opmode, initMethod);
     }
 
-    public boolean lockLauncher(LinearOpMode opmode) {
+    public boolean lockLauncher(LinearOpMode opmode, boolean initMethod) {
         engageLauncher();
         waitForTick(500);
 
         beginingTime = opmode.getRuntime();
 
-        while(!launcherLimitTouchSensor.isPressed() && opmode.getRuntime() < beginingTime + 1.67 && opmode.opModeIsActive()) {
-            launcherMotor.setPower(1);
-            opmode.telemetry.addData("status", "Pulling back");
-            opmode.telemetry.update();
+        if (initMethod) {
+            while(!launcherLimitTouchSensor.isPressed() && opmode.getRuntime() < beginingTime + 1.67) {
+                launcherMotor.setPower(1);
+                opmode.telemetry.addData("status", "Pulling back");
+                opmode.telemetry.update();
+            }
+        } else {
+            while(!launcherLimitTouchSensor.isPressed() && opmode.getRuntime() < beginingTime + 1.67 && opmode.opModeIsActive()) {
+                launcherMotor.setPower(1);
+                opmode.telemetry.addData("status", "Pulling back");
+                opmode.telemetry.update();
+            }
         }
         launcherMotor.setPower(0);
-        opmode.telemetry.addData("status", "Launcher ready to fire");
-        opmode.telemetry.update();
+//        opmode.telemetry.addData("status", "Launcher ready to fire");
+//        opmode.telemetry.update();
 
         Log.i("RKR", "Pullback took " + (opmode.getRuntime() - beginingTime));
 

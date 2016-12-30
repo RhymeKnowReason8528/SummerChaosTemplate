@@ -11,7 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp (name = "TeleOp")
 public class BasicTeleOp extends LinearOpMode {
 
-    private Robot myRobot = null;
+    private Robot myRobot;
+    private Thread pullbackThread;
 
     public void mecanumDrive(double x1, double y1, double x2) {
         x1 = scaleInput(x1);
@@ -52,6 +53,8 @@ public class BasicTeleOp extends LinearOpMode {
         myRobot = new Robot();
         myRobot.init(hardwareMap);
 
+        myRobot.lockLauncher(this, true);
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -62,8 +65,12 @@ public class BasicTeleOp extends LinearOpMode {
             } else {
                 myRobot.collectorMotor.setPower(0);
             }
+
             if(gamepad1.x) {
-                myRobot.lockLauncher(this, false);
+                if (pullbackThread == null || !pullbackThread.isAlive()) {
+                    pullbackThread = new Thread(new PullBackLauncherRunnable());
+                    pullbackThread.run();
+                }
             } else if (gamepad1.y) {
                 myRobot.disengageLauncher(this, false);
             }

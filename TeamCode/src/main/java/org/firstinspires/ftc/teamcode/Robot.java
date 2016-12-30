@@ -80,7 +80,6 @@ public class Robot {
         rightRearMotor.setPower(0);
         collectorMotor.setPower(0);
         launcherMotor.setPower(0);
-        launcherServo.setPosition(0.5);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -151,6 +150,7 @@ public class Robot {
 
     public void disengageLauncher(LinearOpMode opmode, boolean initMethod) {
         launcherServo.setPosition(1);
+        waitForTick(500);
         lockLauncher(opmode, initMethod);
     }
 
@@ -180,5 +180,14 @@ public class Robot {
         Log.i("RKR", "Pullback took " + (opmode.getRuntime() - beginingTime));
 
         return launcherLimitTouchSensor.isPressed();
+    }
+
+
+    private class PullBackLauncherRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            lockLauncher(BasicTeleOp.this, false);
+        }
     }
 }

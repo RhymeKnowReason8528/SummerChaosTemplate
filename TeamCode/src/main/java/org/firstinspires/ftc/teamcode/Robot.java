@@ -158,11 +158,9 @@ public class Robot {
         double initialRuntime = linearOpMode.getRuntime();
         if (pullbackThread == null || !pullbackThread.isAlive()) {
             pullbackThread = new Thread(new PullBackLauncherRunnable());
-            Log.d("AsyncLaunch", "Thread creation took " + (linearOpMode.getRuntime() - initialRuntime) + " seconds");
-            pullbackThread.run();
+            pullbackThread.start();
         }
-        Log.d("AsyncLaunch", "launchAndReload time to complete is " + (linearOpMode.getRuntime() - initialRuntime) + " seconds.");
-    }
+}
     public boolean initLauncher(boolean initMethod) {
         engageLauncher();
         waitForTick(500);

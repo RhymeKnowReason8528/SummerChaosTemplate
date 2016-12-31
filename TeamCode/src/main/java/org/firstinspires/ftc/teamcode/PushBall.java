@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "Push Ball")
 public class PushBall extends LinearOpMode {
 
-  private Robot myRobot = new Robot();
+  private Robot myRobot = new Robot(this);
 
  // ColorSensor colorSensor;    // Hardware Device Object
 

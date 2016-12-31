@@ -57,22 +57,22 @@ public class PushBall extends LinearOpMode {
  // ColorSensor colorSensor;    // Hardware Device Object
 
 
+
   @Override
   public void runOpMode() {
-
     myRobot.init(hardwareMap);
 
     myRobot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
-    float hsvValues[] = {0F,0F,0F};
+    float hsvValues[] = {0F, 0F, 0F};
 
     // values is a reference to the hsvValues array.
     final float values[] = hsvValues;
 
     // get a reference to the RelativeLayout so we can change the background
     // color of the Robot Controller app to match the hue detected by the RGB sensor.
-   // final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
+    // final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
     // bPrevState and bCurrState represent the previous and current state of the button.
     boolean bPrevState = false;
@@ -132,7 +132,7 @@ public class PushBall extends LinearOpMode {
       telemetry.update();
       */
       myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
-      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor > -4320 && opModeIsActive()) {
+      while (myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor > -4320 && opModeIsActive()) {
         myRobot.leftFrontMotor.setPower(-1);
         myRobot.leftRearMotor.setPower(-1);
         myRobot.rightFrontMotor.setPower(-1);

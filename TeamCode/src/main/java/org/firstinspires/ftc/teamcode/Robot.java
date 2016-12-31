@@ -44,12 +44,15 @@ public class Robot {
     /* Local OpMode members. */
     private HardwareMap hwMap  = null;
     private ElapsedTime period  = new ElapsedTime();
+    private LinearOpMode linearOpMode;
+    private Thread pullbackThread;
 
     double encoderSubtractor;
     double beginingTime;
 
     /* Constructor */
-    public Robot() {
+    public Robot(LinearOpMode opmode) {
+        linearOpMode = opmode;
     }
 
     /* Initialize standard Hardware interfaces */
@@ -80,7 +83,6 @@ public class Robot {
         rightRearMotor.setPower(0);
         collectorMotor.setPower(0);
         launcherMotor.setPower(0);
-        launcherServo.setPosition(0.5);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -149,36 +151,51 @@ public class Robot {
         launcherServo.setPosition(0.1);
     }
 
-    public void disengageLauncher(LinearOpMode opmode, boolean initMethod) {
+    public void disengageLauncher() {
         launcherServo.setPosition(1);
-        lockLauncher(opmode, initMethod);
     }
-
-    public boolean lockLauncher(LinearOpMode opmode, boolean initMethod) {
+    public void launchAndReload() {
+        if (pullbackThread == null || !pullbackThread.isAlive()) {
+            pullbackThread = new Thread(new PullBackLauncherRunnable());
+            pullbackThread.run();
+        }
+    }
+    public boolean initLauncher(boolean initMethod) {
         engageLauncher();
         waitForTick(500);
 
-        beginingTime = opmode.getRuntime();
+        beginingTime = linearOpMode.getRuntime();
 
         if (initMethod) {
-            while(!launcherLimitTouchSensor.isPressed() && opmode.getRuntime() < beginingTime + 1.67) {
+            while(!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67) {
                 launcherMotor.setPower(1);
-                opmode.telemetry.addData("status", "Pulling back");
-                opmode.telemetry.update();
+                linearOpMode.telemetry.addData("status", "Pulling back");
+                linearOpMode.telemetry.update();
             }
         } else {
-            while(!launcherLimitTouchSensor.isPressed() && opmode.getRuntime() < beginingTime + 1.67 && opmode.opModeIsActive()) {
+            while(!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67 && linearOpMode.opModeIsActive()) {
                 launcherMotor.setPower(1);
-                opmode.telemetry.addData("status", "Pulling back");
-                opmode.telemetry.update();
+                linearOpMode.telemetry.addData("status", "Pulling back");
+                linearOpMode.telemetry.update();
             }
         }
         launcherMotor.setPower(0);
 //        opmode.telemetry.addData("status", "Launcher ready to fire");
 //        opmode.telemetry.update();
 
-        Log.i("RKR", "Pullback took " + (opmode.getRuntime() - beginingTime));
+        Log.i("RKR", "Pullback took " + (linearOpMode.getRuntime() - beginingTime));
 
         return launcherLimitTouchSensor.isPressed();
+    }
+
+
+    private class PullBackLauncherRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            disengageLauncher();
+            waitForTick(500);
+            initLauncher(false);
+        }
     }
 }

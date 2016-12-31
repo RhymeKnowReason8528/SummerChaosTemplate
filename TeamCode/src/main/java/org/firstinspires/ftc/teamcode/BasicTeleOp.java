@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp (name = "TeleOp")
 public class BasicTeleOp extends LinearOpMode {
 
-    private Robot myRobot = null;
+    private Robot myRobot;
 
     public void mecanumDrive(double x1, double y1, double x2) {//testing GitHub
         x1 = scaleInput(x1);
@@ -49,8 +49,10 @@ public class BasicTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        myRobot = new Robot();
+        myRobot = new Robot(this);
         myRobot.init(hardwareMap);
+
+        myRobot.initLauncher(true);
 
         waitForStart();
 
@@ -62,10 +64,9 @@ public class BasicTeleOp extends LinearOpMode {
             } else {
                 myRobot.collectorMotor.setPower(0);
             }
-            if(gamepad1.x) {
-                myRobot.lockLauncher(this, false);
-            } else if (gamepad1.y) {
-                myRobot.disengageLauncher(this, false);
+
+            if (gamepad1.y) {
+                myRobot.launchAndReload();
             }
             telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
             telemetry.addData("Servo position", myRobot.launcherServo.getPosition());

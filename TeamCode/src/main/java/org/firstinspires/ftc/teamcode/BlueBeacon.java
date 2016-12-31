@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "Blue Beacon")
 public class BlueBeacon extends LinearOpMode {
 
-  private Robot MyRobot = new Robot();
+  private Robot myRobot = new Robot(this);
 
  // ColorSensor colorSensor;    // Hardware Device Object
 
@@ -60,9 +60,9 @@ public class BlueBeacon extends LinearOpMode {
   @Override
   public void runOpMode() {
 
-    MyRobot.init(hardwareMap);
+    myRobot.init(hardwareMap);
 
-    MyRobot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    myRobot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F,0F,0F};
@@ -130,36 +130,36 @@ public class BlueBeacon extends LinearOpMode {
 
       telemetry.update();
       */
-      MyRobot.encoderSubtractor = MyRobot.leftFrontMotor.getCurrentPosition();
-      while(MyRobot.leftFrontMotor.getCurrentPosition() - MyRobot.encoderSubtractor < 5800 && opModeIsActive()) {
-        MyRobot.leftFrontMotor.setPower(1);
-        MyRobot.leftRearMotor.setPower(1);
-        MyRobot.rightFrontMotor.setPower(1);
-        MyRobot.rightRearMotor.setPower(1);
+      myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
+      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor < 5800 && opModeIsActive()) {
+        myRobot.leftFrontMotor.setPower(1);
+        myRobot.leftRearMotor.setPower(1);
+        myRobot.rightFrontMotor.setPower(1);
+        myRobot.rightRearMotor.setPower(1);
       }
 
-      MyRobot.encoderSubtractor = MyRobot.leftFrontMotor.getCurrentPosition();
+      myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
 
-      while(MyRobot.leftFrontMotor.getCurrentPosition() - MyRobot.encoderSubtractor < 1400 && opModeIsActive()) {
-        MyRobot.leftFrontMotor.setPower(1);
-        MyRobot.leftRearMotor.setPower(1);
-        MyRobot.rightFrontMotor.setPower(-1);
-        MyRobot.rightRearMotor.setPower(-1);
+      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor < 1400 && opModeIsActive()) {
+        myRobot.leftFrontMotor.setPower(1);
+        myRobot.leftRearMotor.setPower(1);
+        myRobot.rightFrontMotor.setPower(-1);
+        myRobot.rightRearMotor.setPower(-1);
       }
 
-      MyRobot.encoderSubtractor = MyRobot.leftFrontMotor.getCurrentPosition();
+      myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
 
-      while(MyRobot.leftFrontMotor.getCurrentPosition() - MyRobot.encoderSubtractor < 1780 && opModeIsActive()) {
-        MyRobot.leftFrontMotor.setPower(1);
-        MyRobot.leftRearMotor.setPower(1);
-        MyRobot.rightFrontMotor.setPower(1);
-        MyRobot.rightRearMotor.setPower(1);
+      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor < 1780 && opModeIsActive()) {
+        myRobot.leftFrontMotor.setPower(1);
+        myRobot.leftRearMotor.setPower(1);
+        myRobot.rightFrontMotor.setPower(1);
+        myRobot.rightRearMotor.setPower(1);
       }
 
-      MyRobot.leftFrontMotor.setPower(0);
-      MyRobot.leftRearMotor.setPower(0);
-      MyRobot.rightFrontMotor.setPower(0);
-      MyRobot.rightRearMotor.setPower(0);
+      myRobot.leftFrontMotor.setPower(0);
+      myRobot.leftRearMotor.setPower(0);
+      myRobot.rightFrontMotor.setPower(0);
+      myRobot.rightRearMotor.setPower(0);
 
       requestOpModeStop();
     }

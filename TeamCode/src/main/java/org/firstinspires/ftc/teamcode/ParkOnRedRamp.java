@@ -62,7 +62,6 @@ public class ParkOnRedRamp extends LinearOpMode {
 
     myRobot.init(hardwareMap);
 
-    myRobot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F,0F,0F};
@@ -130,26 +129,26 @@ public class ParkOnRedRamp extends LinearOpMode {
 
       telemetry.update();
       */
-      myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
-      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor > -1640 && opModeIsActive()) {
+      double encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
+      while(myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor > -1640 && opModeIsActive()) {
         myRobot.leftFrontMotor.setPower(-1);
         myRobot.leftRearMotor.setPower(-1);
         myRobot.rightFrontMotor.setPower(-1);
         myRobot.rightRearMotor.setPower(-1);
       }
 
-      myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
+      encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
 
-      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor > -1900 && opModeIsActive()) {
+      while(myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor > -1900 && opModeIsActive()) {
         myRobot.leftFrontMotor.setPower(-1);
         myRobot.leftRearMotor.setPower(-1);
         myRobot.rightFrontMotor.setPower(1);
         myRobot.rightRearMotor.setPower(1);
       }
 
-      myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
+      encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
 
-      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor < 200 && opModeIsActive()) {
+      while(myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor < 200 && opModeIsActive()) {
         myRobot.leftFrontMotor.setPower(0.3);
         myRobot.leftRearMotor.setPower(0.3);
         myRobot.rightFrontMotor.setPower(0.3);

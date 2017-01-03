@@ -11,6 +11,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp (name = "TeleOp")
 public class BasicTeleOp extends LinearOpMode {
 
+    enum CollectorState {
+        RUNNING_FORWARD,
+        RUNNING_BACKWARD,
+        STOPPED
+    }
+
+    CollectorState collectorState = CollectorState.STOPPED;
+
     private Robot myRobot;
 
     public void mecanumDrive(double x1, double y1, double x2) {//testing GitHub
@@ -60,9 +68,13 @@ public class BasicTeleOp extends LinearOpMode {
             mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
             if(gamepad1.right_bumper) {
-                myRobot.collectorMotor.setPower(1);
-            } else {
-                myRobot.collectorMotor.setPower(0);
+                collectorState = CollectorState.RUNNING_FORWARD;
+            } else if(gamepad1.right_trigger > 0.5) {
+                collectorState = CollectorState.STOPPED;
+            } else if (gamepad1.left_bumper) {
+                collectorState = CollectorState.RUNNING_BACKWARD;
+            } else if (collectorState == CollectorState.RUNNING_BACKWARD) {
+                collectorState = CollectorState.STOPPED;
             }
 
             if (gamepad1.y) {
@@ -71,6 +83,14 @@ public class BasicTeleOp extends LinearOpMode {
             telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
             telemetry.addData("Servo position", myRobot.launcherServo.getPosition());
             telemetry.update();
+
+            if(collectorState == CollectorState.RUNNING_FORWARD) {
+                myRobot.collectorMotor.setPower(1);
+            } else if (collectorState == CollectorState.RUNNING_BACKWARD){
+                myRobot.collectorMotor.setPower(-1);
+            } else if (collectorState == CollectorState.STOPPED){
+                myRobot.collectorMotor.setPower(0);
+            }
 
             myRobot.waitForTick(40);
         }

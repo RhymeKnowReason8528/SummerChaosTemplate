@@ -46,9 +46,7 @@ public class Robot {
     private ElapsedTime period = new ElapsedTime();
     private LinearOpMode linearOpMode;
     private Thread pullbackThread;
-
-    double encoderSubtractor;
-    double beginingTime;
+    private DcMotor ENCODER_MOTOR; //initialize in init
 
     /* Constructor */
     public Robot(LinearOpMode opmode) {
@@ -84,15 +82,17 @@ public class Robot {
         collectorMotor.setPower(0);
         launcherMotor.setPower(0);
 
-        // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRearMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRearMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         launcherMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Define and initialize ALL installed servos.
+
+        ENCODER_MOTOR = leftFrontMotor;
     }
 
     /***
@@ -119,10 +119,10 @@ public class Robot {
         period.reset();
     }
 
-    public void moveForward(DcMotor leftFrontMotor, DcMotor leftRearMotor, DcMotor rightFrontMotor, DcMotor rightRearMotor, double distance, double speed, boolean active) {
-        encoderSubtractor = leftFrontMotor.getCurrentPosition();
+    public void moveForward(double distance, double speed) {
+        double encoderSubtractor = leftFrontMotor.getCurrentPosition();
         if (distance >= 0) {
-            while (leftFrontMotor.getCurrentPosition() - encoderSubtractor < distance && active == true) {
+            while (ENCODER_MOTOR.getCurrentPosition() - encoderSubtractor < distance && linearOpMode.opModeIsActive()) {
                 leftFrontMotor.setPower(speed);
                 leftRearMotor.setPower(speed);
                 rightFrontMotor.setPower(speed);
@@ -133,7 +133,7 @@ public class Robot {
             rightFrontMotor.setPower(0);
             rightRearMotor.setPower(0);
         } else {
-            while (leftFrontMotor.getCurrentPosition() - encoderSubtractor > distance && active == true) {
+            while (ENCODER_MOTOR.getCurrentPosition() - encoderSubtractor > distance && linearOpMode.opModeIsActive()) {
                 leftFrontMotor.setPower(-speed);
                 leftRearMotor.setPower(-speed);
                 rightFrontMotor.setPower(-speed);
@@ -142,10 +142,35 @@ public class Robot {
             leftFrontMotor.setPower(0);
             leftRearMotor.setPower(0);
             rightFrontMotor.setPower(0);
-            rightRearMotor.setPower(0);
         }
     }
 
+    public void moveSideways(double distance, double speed) {
+        double encoderSubtractor = leftFrontMotor.getCurrentPosition();
+        if (distance >= 0) {
+            while (ENCODER_MOTOR.getCurrentPosition() - encoderSubtractor < distance && linearOpMode.opModeIsActive()) {
+                leftFrontMotor.setPower(speed);
+                leftRearMotor.setPower(-speed);
+                rightFrontMotor.setPower(-speed);
+                rightRearMotor.setPower(speed);
+            }
+            leftFrontMotor.setPower(0);
+            leftRearMotor.setPower(0);
+            rightFrontMotor.setPower(0);
+            rightRearMotor.setPower(0);
+        } else {
+            while (ENCODER_MOTOR.getCurrentPosition() - encoderSubtractor > distance && linearOpMode.opModeIsActive()) {
+                leftFrontMotor.setPower(-speed);
+                leftRearMotor.setPower(speed);
+                rightFrontMotor.setPower(speed);
+                rightRearMotor.setPower(-speed);
+            }
+            leftFrontMotor.setPower(0);
+            leftRearMotor.setPower(0);
+            rightFrontMotor.setPower(0);
+            rightRearMotor.setPower(0);
+        }
+    }
     public void engageLauncher() {
         launcherServo.setPosition(0.1);
     }
@@ -166,7 +191,7 @@ public class Robot {
         engageLauncher();
         waitForTick(500);
 
-        beginingTime = linearOpMode.getRuntime();
+        double beginingTime = linearOpMode.getRuntime();
 
         if (initMethod) {
             while (!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67) {

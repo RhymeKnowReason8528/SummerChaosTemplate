@@ -1,4 +1,4 @@
-/* Copyright (c) 2015 Qualcomm Technologies Inc
+  /* Copyright (c) 2015 Qualcomm Technologies Inc
 
 All rights reserved.
 
@@ -61,8 +61,6 @@ public class ParkOnBlueRamp extends LinearOpMode {
   public void runOpMode() {
 
     myRobot.init(hardwareMap);
-
-    myRobot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F,0F,0F};
@@ -130,20 +128,20 @@ public class ParkOnBlueRamp extends LinearOpMode {
 
       telemetry.update();
       */
-      myRobot.moveForward(myRobot.leftFrontMotor, myRobot.leftRearMotor, myRobot.rightFrontMotor, myRobot.rightRearMotor, 1540, 1, opModeIsActive());
+      myRobot.moveForward(1540, 1);
 
-      myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
+      double encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
 
-      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor < 1150 && opModeIsActive()) {
+      while(myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor < 1150 && opModeIsActive()) {
         myRobot.leftFrontMotor.setPower(1);
         myRobot.leftRearMotor.setPower(1);
         myRobot.rightFrontMotor.setPower(-1);
         myRobot.rightRearMotor.setPower(-1);
       }
 
-      myRobot.encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
+      encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
 
-      while(myRobot.leftFrontMotor.getCurrentPosition() - myRobot.encoderSubtractor < 2780 && opModeIsActive()) {
+      while(myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor < 2780 && opModeIsActive()) {
         myRobot.leftFrontMotor.setPower(0.3);
         myRobot.leftRearMotor.setPower(0.3);
         myRobot.rightFrontMotor.setPower(0.3);

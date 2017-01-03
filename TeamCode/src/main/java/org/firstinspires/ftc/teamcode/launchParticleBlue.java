@@ -62,8 +62,6 @@ public class launchParticleBlue extends LinearOpMode {
 
     myRobot.init(hardwareMap);
 
-    myRobot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F,0F,0F};
 

@@ -77,12 +77,18 @@ public class BasicTeleOp extends LinearOpMode {
                 collectorState = CollectorState.STOPPED;
             }
 
+            //TODO: Make the collector stop when the launcher is pulled back
+
             if (gamepad1.y) {
                 myRobot.launchAndReload();
             }
             telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
             telemetry.addData("Servo position", myRobot.launcherServo.getPosition());
             telemetry.update();
+
+            if(!myRobot.isLauncherPulledBack()) {
+                collectorState = CollectorState.STOPPED;
+            }
 
             if(collectorState == CollectorState.RUNNING_FORWARD) {
                 myRobot.collectorMotor.setPower(1);

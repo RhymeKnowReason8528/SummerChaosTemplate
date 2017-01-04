@@ -81,6 +81,7 @@ public class Robot {
     Comparison comparisonToUse;
 
     public void calibrateGyro () throws InterruptedException {
+
         linearOpMode.telemetry.addData("calibrating", true);
         linearOpMode.telemetry.update();
         try {
@@ -91,7 +92,6 @@ public class Robot {
         } catch (Exception e) {
             e.printStackTrace();
         }
-       // linearOpMode.telemetry.addData("calibrating", false);
         linearOpMode.telemetry.addData("calibrating", false);
         linearOpMode.telemetry.update();
     }
@@ -102,7 +102,7 @@ public class Robot {
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    public void init(HardwareMap ahwMap) throws InterruptedException {
         // save reference to HW Map
         hwMap = ahwMap;
 
@@ -140,6 +140,8 @@ public class Robot {
         collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         launcherMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Define and initialize ALL installed servos.
+
+        calibrateGyro();
 
         ENCODER_MOTOR = leftFrontMotor;
     }

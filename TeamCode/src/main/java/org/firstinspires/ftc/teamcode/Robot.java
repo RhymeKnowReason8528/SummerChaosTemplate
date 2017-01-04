@@ -81,6 +81,8 @@ public class Robot {
     Comparison comparisonToUse;
 
     public void calibrateGyro () throws InterruptedException {
+        linearOpMode.telemetry.addData("calibrating", true);
+        linearOpMode.telemetry.update();
         try {
             gyro.calibrate();
             while(gyro.isCalibrating()){
@@ -90,6 +92,8 @@ public class Robot {
             e.printStackTrace();
         }
        // linearOpMode.telemetry.addData("calibrating", false);
+        linearOpMode.telemetry.addData("calibrating", false);
+        linearOpMode.telemetry.update();
     }
 
     /* Constructor */
@@ -176,13 +180,20 @@ public class Robot {
             leftFrontMotor.setPower(driveSteering);
             leftRearMotor.setPower(driveSteering);
 
-            currentHeading = gyro.getIntegratedZValue();
+            linearOpMode.telemetry.addData("integratedZValue", gyro.getIntegratedZValue());
+            linearOpMode.telemetry.addData("Current heading", currentHeading);
+            linearOpMode.telemetry.addData("Target heading", targetHeading);
+            linearOpMode.telemetry.addData("Drive steering", driveSteering);
+            linearOpMode.telemetry.addData("Turn state", "In progress");
+            linearOpMode.telemetry.update();
         }
 
         rightRearMotor.setPower(0);
         rightFrontMotor.setPower(0);
         leftRearMotor.setPower(0);
         leftFrontMotor.setPower(0);
+        linearOpMode.telemetry.addData("Turn state", "done");
+        linearOpMode.telemetry.update();
 
         return true;
     }

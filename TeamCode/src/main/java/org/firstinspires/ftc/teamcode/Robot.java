@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -30,18 +32,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class Robot {
     /* Public OpMode members. */
-    public DcMotor leftFrontMotor = null;
-    public DcMotor leftRearMotor = null;
-    public DcMotor rightFrontMotor = null;
-    public DcMotor rightRearMotor = null;
+    DcMotor leftFrontMotor = null;
+    DcMotor leftRearMotor = null;
+    DcMotor rightFrontMotor = null;
+    DcMotor rightRearMotor = null;
 
-    public DcMotor collectorMotor = null;
+    DcMotor collectorMotor = null;
 
-    public DcMotor launcherMotor = null;
-    public Servo launcherServo;
+    DcMotor launcherMotor = null;
+    Servo launcherServo;
 
-    public TouchSensor launcherLimitTouchSensor;
-    public ColorSensor colorSensor;
+    TouchSensor launcherLimitTouchSensor;
+    ColorSensor colorSensor;
+    ModernRoboticsI2cGyro gyro;
 
     /* Local OpMode members. */
     private HardwareMap hwMap = null;
@@ -50,9 +53,43 @@ public class Robot {
     private Thread pullbackThread;
     private DcMotor ENCODER_MOTOR; //initialize in init
     private boolean isLauncherPulledBack = false;
+    final static double FAST_LIMIT_GYRO = 0.4;
+    final static double SLOW_LIMIT_GYRO = 0.1;
+    final double DRIVE_GAIN = .005;
 
     public boolean isLauncherPulledBack() {
         return isLauncherPulledBack;
+    }
+
+    public static enum Comparison{
+        LESS_THAN{
+            @Override
+            public boolean evaluate(double x1, double x2) {
+                return x1<x2;
+            }
+        },
+        GREATER_THAN {
+            @Override
+            public boolean evaluate(double x1, double x2) {
+                return x1>x2;
+            }
+        };
+
+        public abstract boolean evaluate(double x1, double x2);
+    }
+
+    Comparison comparisonToUse;
+
+    public void calibrateGyro () throws InterruptedException {
+        try {
+            gyro.calibrate();
+            while(gyro.isCalibrating()){
+                Thread.sleep(50);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       // linearOpMode.telemetry.addData("calibrating", false);
     }
 
     /* Constructor */
@@ -80,6 +117,7 @@ public class Robot {
 
         launcherLimitTouchSensor = hwMap.touchSensor.get("launcher_limit_sensor");
         colorSensor = hwMap.colorSensor.get("beacon_sensor");
+        gyro = (ModernRoboticsI2cGyro)hwMap.gyroSensor.get("gyro_sensor");
 
         // Set all motors to zero power
         leftFrontMotor.setPower(0);
@@ -102,13 +140,52 @@ public class Robot {
         ENCODER_MOTOR = leftFrontMotor;
     }
 
-    /***
-     * waitForTick implements a periodic delay. However, this acts like a metronome with a regular
-     * periodic tick.  This is used to compensate for varying processing times for each cycle.
-     * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.
-     *
-     * @param periodMs Length of wait cycle in mSec.
-     */
+
+    public boolean turn (double targetHeading) throws InterruptedException {
+        double currentHeading = gyro.getIntegratedZValue();
+        double adjustedTargetHeading = targetHeading + currentHeading;
+
+        double headingError;
+        double driveSteering;
+
+        if (currentHeading < adjustedTargetHeading) {
+            comparisonToUse = Comparison.LESS_THAN;
+        }
+        else {
+            comparisonToUse = Comparison.GREATER_THAN;
+        }
+
+        while (comparisonToUse.evaluate(currentHeading, adjustedTargetHeading)) {
+            headingError = (adjustedTargetHeading - currentHeading);
+            driveSteering = headingError * DRIVE_GAIN;
+            if(driveSteering > FAST_LIMIT_GYRO) {
+                driveSteering = FAST_LIMIT_GYRO;
+            } else if (driveSteering < -FAST_LIMIT_GYRO) {
+                driveSteering = -FAST_LIMIT_GYRO;
+            } else if (driveSteering < SLOW_LIMIT_GYRO && driveSteering > -SLOW_LIMIT_GYRO) {
+                if(comparisonToUse == Comparison.LESS_THAN) {
+                    driveSteering = SLOW_LIMIT_GYRO;
+                }
+                else {
+                    driveSteering = -SLOW_LIMIT_GYRO;
+                }
+            }
+            rightFrontMotor.setPower(-driveSteering);
+            rightRearMotor.setPower(-driveSteering);
+
+            leftFrontMotor.setPower(driveSteering);
+            leftRearMotor.setPower(driveSteering);
+
+            currentHeading = gyro.getIntegratedZValue();
+        }
+
+        rightRearMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        leftRearMotor.setPower(0);
+        leftFrontMotor.setPower(0);
+
+        return true;
+    }
     public void waitForTick(long periodMs) {
 
         long remaining = periodMs - (long) period.milliseconds();

@@ -202,14 +202,10 @@ public class Robot {
         if (initMethod) {
             while (!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67) {
                 launcherMotor.setPower(1);
-                linearOpMode.telemetry.addData("status", "Pulling back");
-                linearOpMode.telemetry.update();
             }
         } else {
             while (!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67 && linearOpMode.opModeIsActive()) {
                 launcherMotor.setPower(1);
-                linearOpMode.telemetry.addData("status", "Pulling back");
-                linearOpMode.telemetry.update();
             }
         }
         launcherMotor.setPower(0);

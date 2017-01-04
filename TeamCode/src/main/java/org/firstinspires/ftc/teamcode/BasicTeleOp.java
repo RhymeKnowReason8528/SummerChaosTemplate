@@ -82,9 +82,6 @@ public class BasicTeleOp extends LinearOpMode {
             if (gamepad1.y) {
                 myRobot.launchAndReload();
             }
-            telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
-            telemetry.addData("Servo position", myRobot.launcherServo.getPosition());
-            telemetry.update();
 
             if(!myRobot.isLauncherPulledBack()) {
                 collectorState = CollectorState.STOPPED;
@@ -97,6 +94,16 @@ public class BasicTeleOp extends LinearOpMode {
             } else if (collectorState == CollectorState.STOPPED){
                 myRobot.collectorMotor.setPower(0);
             }
+
+            telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
+            telemetry.addData("Collector state", collectorState);
+
+            if(myRobot.isLauncherPulledBack()) {
+                telemetry.addData("Launcher state", "Ready");
+            } else {
+                telemetry.addData("Launcher state", "Launching");
+            }
+            telemetry.update();
 
             myRobot.waitForTick(40);
         }

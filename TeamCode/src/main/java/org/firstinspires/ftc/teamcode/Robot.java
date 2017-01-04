@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -40,6 +41,7 @@ public class Robot {
     public Servo launcherServo;
 
     public TouchSensor launcherLimitTouchSensor;
+    public ColorSensor colorSensor;
 
     /* Local OpMode members. */
     private HardwareMap hwMap = null;
@@ -77,7 +79,7 @@ public class Robot {
         launcherServo = hwMap.servo.get("launcher_servo");
 
         launcherLimitTouchSensor = hwMap.touchSensor.get("launcher_limit_sensor");
-
+        colorSensor = hwMap.colorSensor.get("beacon_sensor");
 
         // Set all motors to zero power
         leftFrontMotor.setPower(0);

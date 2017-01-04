@@ -161,9 +161,17 @@ public class Robot {
             comparisonToUse = Comparison.GREATER_THAN;
         }
 
-        while (comparisonToUse.evaluate(currentHeading, adjustedTargetHeading)) {
+        while (comparisonToUse.evaluate(currentHeading, adjustedTargetHeading) && linearOpMode.opModeIsActive()) {
+            currentHeading = gyro.getIntegratedZValue();
             headingError = (adjustedTargetHeading - currentHeading);
             driveSteering = headingError * DRIVE_GAIN;
+
+            rightFrontMotor.setPower(driveSteering);
+            rightRearMotor.setPower(driveSteering);
+            leftFrontMotor.setPower(-driveSteering);
+            leftRearMotor.setPower(-driveSteering);
+
+            //issue is with the following code, so I temporarily moved the power settings above it.
             if(driveSteering > FAST_LIMIT_GYRO) {
                 driveSteering = FAST_LIMIT_GYRO;
             } else if (driveSteering < -FAST_LIMIT_GYRO) {
@@ -176,11 +184,6 @@ public class Robot {
                     driveSteering = -SLOW_LIMIT_GYRO;
                 }
             }
-            rightFrontMotor.setPower(-driveSteering);
-            rightRearMotor.setPower(-driveSteering);
-
-            leftFrontMotor.setPower(driveSteering);
-            leftRearMotor.setPower(driveSteering);
 
             linearOpMode.telemetry.addData("integratedZValue", gyro.getIntegratedZValue());
             linearOpMode.telemetry.addData("Current heading", currentHeading);

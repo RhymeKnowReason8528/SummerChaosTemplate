@@ -67,11 +67,11 @@ public class BasicTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-            if(gamepad1.right_bumper) {
+            if(gamepad2.right_bumper || gamepad1.right_bumper) {
                 collectorState = CollectorState.RUNNING_FORWARD;
-            } else if(gamepad1.right_trigger > 0.5) {
+            } else if(gamepad2.right_trigger > 0.5 || gamepad1.right_trigger > 0.5) {
                 collectorState = CollectorState.STOPPED;
-            } else if (gamepad1.left_bumper) {
+            } else if (gamepad2.left_bumper || gamepad1.left_bumper) {
                 collectorState = CollectorState.RUNNING_BACKWARD;
             } else if (collectorState == CollectorState.RUNNING_BACKWARD) {
                 collectorState = CollectorState.STOPPED;

@@ -47,6 +47,11 @@ public class Robot {
     private LinearOpMode linearOpMode;
     private Thread pullbackThread;
     private DcMotor ENCODER_MOTOR; //initialize in init
+    private boolean isLauncherPulledBack = false;
+
+    public boolean isLauncherPulledBack() {
+        return isLauncherPulledBack;
+    }
 
     /* Constructor */
     public Robot(LinearOpMode opmode) {
@@ -177,6 +182,7 @@ public class Robot {
 
     public void disengageLauncher() {
         launcherServo.setPosition(1);
+        isLauncherPulledBack = false;
     }
 
     public void launchAndReload() {
@@ -207,6 +213,7 @@ public class Robot {
             }
         }
         launcherMotor.setPower(0);
+        isLauncherPulledBack = true;
 //        opmode.telemetry.addData("status", "Launcher ready to fire");
 //        opmode.telemetry.update();
 

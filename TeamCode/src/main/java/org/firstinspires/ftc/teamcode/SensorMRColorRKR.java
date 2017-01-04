@@ -59,7 +59,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 public class SensorMRColorRKR extends LinearOpMode {
 
   @Override
-  public void runOpMode() {
+  public void runOpMode() throws InterruptedException {
 
     Robot myRobot = new Robot(this);
     // hsvValues is an array that will hold the hue, saturation, and value information.

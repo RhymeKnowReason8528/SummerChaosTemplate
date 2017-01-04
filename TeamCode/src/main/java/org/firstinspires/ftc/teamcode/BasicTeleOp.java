@@ -56,7 +56,7 @@ public class BasicTeleOp extends LinearOpMode {
     }
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         myRobot = new Robot(this);
         myRobot.init(hardwareMap);
 

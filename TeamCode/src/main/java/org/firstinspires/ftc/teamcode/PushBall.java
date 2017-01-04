@@ -59,7 +59,7 @@ public class PushBall extends LinearOpMode {
 
 
   @Override
-  public void runOpMode() {
+  public void runOpMode() throws InterruptedException {
     myRobot.init(hardwareMap);
 
     // hsvValues is an array that will hold the hue, saturation, and value information.

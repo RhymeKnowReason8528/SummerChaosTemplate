@@ -58,7 +58,7 @@ public class launchParticleBlue extends LinearOpMode {
 
 
   @Override
-  public void runOpMode() {
+  public void runOpMode() throws InterruptedException {
 
     myRobot.init(hardwareMap);
 

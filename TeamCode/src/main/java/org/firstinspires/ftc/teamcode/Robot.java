@@ -81,16 +81,15 @@ public class Robot {
     Comparison comparisonToUse;
 
     public void calibrateGyro () throws InterruptedException {
-
+        gyro.calibrate();
         linearOpMode.telemetry.addData("calibrating", true);
         linearOpMode.telemetry.update();
-        try {
-            gyro.calibrate();
-            while(gyro.isCalibrating()){
-                Thread.sleep(50);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        int calibrationTicks = 0;
+        while(gyro.isCalibrating()){
+            calibrationTicks++;
+            waitForTick(200);
+            linearOpMode.telemetry.addData("Gyro Calibration Ticks", calibrationTicks);
+            linearOpMode.telemetry.update();
         }
         linearOpMode.telemetry.addData("calibrating", false);
         linearOpMode.telemetry.update();
@@ -174,9 +173,12 @@ public class Robot {
             //issue is with the following code, so I temporarily moved the power settings above it.
             if(driveSteering > FAST_LIMIT_GYRO) {
                 driveSteering = FAST_LIMIT_GYRO;
+                linearOpMode.telemetry.addData("Limiting", "At maximum speed positive");
             } else if (driveSteering < -FAST_LIMIT_GYRO) {
                 driveSteering = -FAST_LIMIT_GYRO;
+                linearOpMode.telemetry.addData("Limiting", "At maximum speed negative");
             } else if (driveSteering < SLOW_LIMIT_GYRO && driveSteering > -SLOW_LIMIT_GYRO) {
+                linearOpMode.telemetry.addData("Limiting", "At minimum speed");
                 if(comparisonToUse == Comparison.LESS_THAN) {
                     driveSteering = SLOW_LIMIT_GYRO;
                 }
@@ -187,8 +189,9 @@ public class Robot {
 
             linearOpMode.telemetry.addData("integratedZValue", gyro.getIntegratedZValue());
             linearOpMode.telemetry.addData("Current heading", currentHeading);
-            linearOpMode.telemetry.addData("Target heading", targetHeading);
-            linearOpMode.telemetry.addData("Drive steering", driveSteering);
+            linearOpMode.telemetry.addData("Target heading", adjustedTargetHeading);
+            linearOpMode.telemetry.addData("Comparison being used", comparisonToUse);
+            linearOpMode.telemetry.addData("Drive power", driveSteering);
             linearOpMode.telemetry.addData("Turn state", "In progress");
             linearOpMode.telemetry.update();
         }

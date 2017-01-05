@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
 */
 @TeleOp(name = "Sensor: MR Gyro", group = "Sensor")
-@Disabled
+//@Disabled
 public class SensorMRGyro extends LinearOpMode {
 
   @Override
@@ -63,7 +63,7 @@ public class SensorMRGyro extends LinearOpMode {
     boolean curResetState  = false;
 
     // get a reference to a Modern Robotics GyroSensor object.
-    gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+    gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro_sensor");
 
     // start calibrating the gyro.
     telemetry.addData(">", "Gyro Calibrating. Do Not move!");

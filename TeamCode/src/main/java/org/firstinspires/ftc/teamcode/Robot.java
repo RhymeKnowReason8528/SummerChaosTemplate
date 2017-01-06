@@ -53,8 +53,8 @@ public class Robot {
     private Thread pullbackThread;
     private DcMotor ENCODER_MOTOR; //initialize in init
     private boolean isLauncherPulledBack = false;
-    final static double FAST_LIMIT_GYRO = 0.4;
-    final static double SLOW_LIMIT_GYRO = 0.1;
+    final static double FAST_LIMIT_GYRO = 0.8;
+    final static double SLOW_LIMIT_GYRO = 0.2;
     final double DRIVE_GAIN = .005;
 
     public boolean isLauncherPulledBack() {
@@ -130,15 +130,28 @@ public class Robot {
         collectorMotor.setPower(0);
         launcherMotor.setPower(0);
 
+
+        leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRearMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRearMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftRearMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRearMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+  /*      rightFrontMotor.setMaxSpeed(2770);
+        rightRearMotor.setMaxSpeed(2770);
+        leftFrontMotor.setMaxSpeed(2770);
+        leftRearMotor.setMaxSpeed(2770);*/
+
         collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         launcherMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Define and initialize ALL installed servos.
+
 
         calibrateGyro();
 
@@ -160,15 +173,19 @@ public class Robot {
             comparisonToUse = Comparison.GREATER_THAN;
         }
 
+        gyro.getIntegratedZValue();
+
         while (comparisonToUse.evaluate(currentHeading, adjustedTargetHeading) && linearOpMode.opModeIsActive()) {
             currentHeading = gyro.getIntegratedZValue();
             headingError = (adjustedTargetHeading - currentHeading);
             driveSteering = headingError * DRIVE_GAIN;
 
-            rightFrontMotor.setPower(driveSteering);
-            rightRearMotor.setPower(driveSteering);
-            leftFrontMotor.setPower(-driveSteering);
-            leftRearMotor.setPower(-driveSteering);
+//            linearOpMode.telemetry.addData("integratedZValue 1", gyro.getIntegratedZValue());
+//            linearOpMode.telemetry.addData("Current heading 1", currentHeading);
+//            linearOpMode.telemetry.addData("Target heading 1", adjustedTargetHeading);
+//            linearOpMode.telemetry.addData("Comparison being used 1", comparisonToUse);
+//            linearOpMode.telemetry.addData("Turn state 1", "In progress");
+
 
             //issue is with the following code, so I temporarily moved the power settings above it.
             if(driveSteering > FAST_LIMIT_GYRO) {
@@ -187,12 +204,24 @@ public class Robot {
                 }
             }
 
-            linearOpMode.telemetry.addData("integratedZValue", gyro.getIntegratedZValue());
-            linearOpMode.telemetry.addData("Current heading", currentHeading);
-            linearOpMode.telemetry.addData("Target heading", adjustedTargetHeading);
-            linearOpMode.telemetry.addData("Comparison being used", comparisonToUse);
-            linearOpMode.telemetry.addData("Drive power", driveSteering);
-            linearOpMode.telemetry.addData("Turn state", "In progress");
+            rightFrontMotor.setPower(driveSteering);
+            rightRearMotor.setPower(driveSteering);
+            leftFrontMotor.setPower(-driveSteering);
+            leftRearMotor.setPower(-driveSteering);
+
+//            linearOpMode.telemetry.addData("integratedZValue 2", gyro.getIntegratedZValue());
+//            linearOpMode.telemetry.addData("Current heading 2", currentHeading);
+//            linearOpMode.telemetry.addData("Target heading 2", adjustedTargetHeading);
+//            linearOpMode.telemetry.addData("Comparison being used 2", comparisonToUse);
+//            linearOpMode.telemetry.addData("Drive power 2", driveSteering);
+//            linearOpMode.telemetry.addData("Turn state 2", "In progress");
+
+            linearOpMode.telemetry.addData("Drive power 2", driveSteering);
+            linearOpMode.telemetry.addData("right front motor power", rightFrontMotor.getPower());
+            linearOpMode.telemetry.addData("right rear motor power", rightRearMotor.getPower());
+            linearOpMode.telemetry.addData("left front motor power", leftFrontMotor.getPower());
+            linearOpMode.telemetry.addData("left rear motor power", leftRearMotor.getPower());
+
             linearOpMode.telemetry.update();
         }
 

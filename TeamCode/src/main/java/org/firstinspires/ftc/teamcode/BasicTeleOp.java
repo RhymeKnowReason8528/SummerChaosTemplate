@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -62,9 +64,13 @@ public class BasicTeleOp extends LinearOpMode {
 
         myRobot.initLauncher(true);
 
+        double elapsedTimeAtLoopStart;
+
         waitForStart();
 
         while (opModeIsActive()) {
+            elapsedTimeAtLoopStart = getRuntime();
+
             mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
             if(gamepad2.right_bumper || gamepad1.right_bumper) {
@@ -76,8 +82,6 @@ public class BasicTeleOp extends LinearOpMode {
             } else if (collectorState == CollectorState.RUNNING_BACKWARD) {
                 collectorState = CollectorState.STOPPED;
             }
-
-            //TODO: Make the collector stop when the launcher is pulled back
 
             if (gamepad1.y) {
                 myRobot.launchAndReload();
@@ -105,7 +109,9 @@ public class BasicTeleOp extends LinearOpMode {
             }
             telemetry.update();
 
-            myRobot.waitForTick(40);
+            myRobot.waitForTick(20);
+
+            Log.d("RKR", Double.toString(getRuntime() - elapsedTimeAtLoopStart));
         }
     }
 

@@ -13,13 +13,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp (name = "TeleOp")
 public class BasicTeleOp extends LinearOpMode {
 
-    enum CollectorState {
-        RUNNING_FORWARD,
-        RUNNING_BACKWARD,
-        STOPPED
-    }
-
-    CollectorState collectorState = CollectorState.STOPPED;
 
     private Robot myRobot;
 
@@ -69,50 +62,40 @@ public class BasicTeleOp extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            elapsedTimeAtLoopStart = getRuntime();
-
             mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            myRobot.runCollector();
 
             if(gamepad2.right_bumper || gamepad1.right_bumper) {
-                collectorState = CollectorState.RUNNING_FORWARD;
+                myRobot.collectorState = Robot.CollectorState.RUNNING_FORWARD;
             } else if(gamepad2.right_trigger > 0.5 || gamepad1.right_trigger > 0.5) {
-                collectorState = CollectorState.STOPPED;
+                myRobot.collectorState = Robot.CollectorState.STOPPED;
             } else if (gamepad2.left_bumper || gamepad1.left_bumper) {
-                collectorState = CollectorState.RUNNING_BACKWARD;
-            } else if (collectorState == CollectorState.RUNNING_BACKWARD) {
-                collectorState = CollectorState.STOPPED;
+                myRobot.collectorState = Robot.CollectorState.RUNNING_BACKWARD;
+            } else if (myRobot.collectorState == Robot.CollectorState.RUNNING_BACKWARD) {
+                myRobot.collectorState = Robot.CollectorState.STOPPED;
             }
 
             if (gamepad1.y) {
                 myRobot.launchAndReload();
             }
 
-            if(!myRobot.isLauncherPulledBack()) {
-                collectorState = CollectorState.STOPPED;
-            }
+          /*  if(!myRobot.isLauncherPulledBack()) {
 
-            if(collectorState == CollectorState.RUNNING_FORWARD) {
-                myRobot.collectorMotor.setPower(1);
-            } else if (collectorState == CollectorState.RUNNING_BACKWARD){
-                myRobot.collectorMotor.setPower(-1);
-            } else if (collectorState == CollectorState.STOPPED){
-                myRobot.collectorMotor.setPower(0);
-            }
+            }*/
+
 
             telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
-            telemetry.addData("Collector state", collectorState);
+            telemetry.addData("Collector state", myRobot.collectorState);
 
             if(myRobot.isLauncherPulledBack()) {
                 telemetry.addData("Launcher state", "Ready");
             } else {
                 telemetry.addData("Launcher state", "Launching");
             }
+
             telemetry.update();
-
             myRobot.waitForTick(20);
-
-            Log.d("RKR", Double.toString(getRuntime() - elapsedTimeAtLoopStart));
-        }
+       }
     }
 
     private double scaleInput(double dVal) {

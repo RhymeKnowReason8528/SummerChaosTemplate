@@ -57,6 +57,14 @@ public class Robot {
     final static double SLOW_LIMIT_GYRO = 0.2;
     final double DRIVE_GAIN = .005;
 
+    enum CollectorState {
+        RUNNING_FORWARD,
+        RUNNING_BACKWARD,
+        STOPPED
+    }
+
+    CollectorState collectorState = CollectorState.STOPPED;
+
     public boolean isLauncherPulledBack() {
         return isLauncherPulledBack;
     }
@@ -215,22 +223,12 @@ public class Robot {
 //            linearOpMode.telemetry.addData("Comparison being used 2", comparisonToUse);
 //            linearOpMode.telemetry.addData("Drive power 2", driveSteering);
 //            linearOpMode.telemetry.addData("Turn state 2", "In progress");
-
-            linearOpMode.telemetry.addData("Drive power 2", driveSteering);
-            linearOpMode.telemetry.addData("right front motor power", rightFrontMotor.getPower());
-            linearOpMode.telemetry.addData("right rear motor power", rightRearMotor.getPower());
-            linearOpMode.telemetry.addData("left front motor power", leftFrontMotor.getPower());
-            linearOpMode.telemetry.addData("left rear motor power", leftRearMotor.getPower());
-
-            linearOpMode.telemetry.update();
         }
 
         rightRearMotor.setPower(0);
         rightFrontMotor.setPower(0);
         leftRearMotor.setPower(0);
         leftFrontMotor.setPower(0);
-        linearOpMode.telemetry.addData("Turn state", "done");
-        linearOpMode.telemetry.update();
 
         return true;
     }
@@ -274,6 +272,7 @@ public class Robot {
             leftFrontMotor.setPower(0);
             leftRearMotor.setPower(0);
             rightFrontMotor.setPower(0);
+            rightRearMotor.setPower(0);
         }
     }
 
@@ -309,11 +308,11 @@ public class Robot {
 
     public void disengageLauncher() {
         launcherServo.setPosition(1);
+        waitForTick(500);
         isLauncherPulledBack = false;
     }
 
     public void launchAndReload() {
-        double initialRuntime = linearOpMode.getRuntime();
         if (pullbackThread == null || !pullbackThread.isAlive()) {
             pullbackThread = new Thread(new PullBackLauncherRunnable());
             pullbackThread.start();
@@ -345,13 +344,21 @@ public class Robot {
         return launcherLimitTouchSensor.isPressed();
     }
 
+    public void runCollector() {
+        if(collectorState == CollectorState.RUNNING_FORWARD) {
+            collectorMotor.setPower(1);
+        } else if (collectorState == CollectorState.RUNNING_BACKWARD){
+            collectorMotor.setPower(-1);
+        } else if (collectorState == CollectorState.STOPPED){
+            collectorMotor.setPower(0);
+        }
+    }
 
     private class PullBackLauncherRunnable implements Runnable {
 
         @Override
         public void run() {
             disengageLauncher();
-            waitForTick(500);
             initLauncher(false);
         }
     }

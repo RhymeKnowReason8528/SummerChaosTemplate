@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -50,6 +51,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  */
 //@Autonomous(name = "Sensor: MR Color", group = "Sensor")
 @Autonomous(name = "Max speed test")
+@Disabled
 public class MaxSpeedTest extends LinearOpMode {
 
   private Robot myRobot = new Robot(this);

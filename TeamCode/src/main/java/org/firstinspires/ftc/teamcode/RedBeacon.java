@@ -32,9 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 /*
  *
@@ -50,31 +48,71 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 //@Autonomous(name = "Sensor: MR Color", group = "Sensor")
-@Autonomous(name = "Sideways Movement Test")
-@Disabled
-public class SidewaysTest extends LinearOpMode {
+@Autonomous(name = "Red Beacon", group = "Beacon")
+public class RedBeacon extends LinearOpMode {
 
     private Robot myRobot = new Robot(this);
 
     // ColorSensor colorSensor;    // Hardware Device Object
 
 
-
     @Override
     public void runOpMode() throws InterruptedException {
+
         myRobot.init(hardwareMap);
 
-        // hsvValues is an array that will hold the hue, saturation, and value information.
-        float hsvValues[] = {0F, 0F, 0F};
-
-        // wait for the start button to be pressed.
         waitForStart();
 
         while (opModeIsActive()) {
 
-            myRobot.moveSideways(1800, 1);
-            myRobot.moveSideways(-1800, 1);
+            myRobot.moveForward(-800, 0.5);
+            myRobot.disengageLauncher();
+            myRobot.waitForTick(1000);
+            myRobot.initLauncher(false);
 
+            myRobot.collectorState = Robot.CollectorState.RUNNING_FORWARD;
+            myRobot.runCollector();
+            myRobot.waitForTick(4000);
+            myRobot.collectorState = Robot.CollectorState.STOPPED;
+            myRobot.runCollector();
+
+            myRobot.disengageLauncher();
+            myRobot.waitForTick(1000);
+            myRobot.initLauncher(false);
+
+            myRobot.turn(70);
+            myRobot.moveForward(4320, 1);
+//            myRobot.turn(10);
+//            myRobot.moveForward(750, 0.5);
+//            myRobot.turn(40);
+//            myRobot.moveForward(300, 0.5);
+
+//            double initialPos = myRobot.leftFrontMotor.getCurrentPosition();
+//            if (myRobot.colorSensor.red() > myRobot.colorSensor.blue()) {
+//                myRobot.moveForward(-300, 1);
+//                while (myRobot.rightFrontMotor.getCurrentPosition() - initialPos < 100) {
+//                    myRobot.rightFrontMotor.setPower(1);
+//                    myRobot.rightRearMotor.setPower(1);
+//                    myRobot.leftFrontMotor.setPower(-1);
+//                    myRobot.leftRearMotor.setPower(-1);
+//                }
+//                myRobot.rightFrontMotor.setPower(0);
+//                myRobot.rightRearMotor.setPower(0);
+//                myRobot.leftFrontMotor.setPower(0);
+//                myRobot.leftRearMotor.setPower(0);
+//            } else {
+//                while (myRobot.rightFrontMotor.getCurrentPosition() - initialPos < 100) {
+//                    myRobot.rightFrontMotor.setPower(1);
+//                    myRobot.rightRearMotor.setPower(1);
+//                    myRobot.leftFrontMotor.setPower(-1);
+//                    myRobot.leftRearMotor.setPower(-1);
+//                }
+//                myRobot.rightFrontMotor.setPower(0);
+//                myRobot.rightRearMotor.setPower(0);
+//                myRobot.leftFrontMotor.setPower(0);
+//                myRobot.leftRearMotor.setPower(0);
+//            }
+//            myRobot.turn(-30);
             requestOpModeStop();
         }
     }

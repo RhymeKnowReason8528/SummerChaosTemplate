@@ -82,11 +82,12 @@ public class BlueBeacon extends LinearOpMode {
             myRobot.waitForTick(1000);
             myRobot.initLauncher(false);
 
-            myRobot.turn(-110);
-            myRobot.moveForward(4320, 1);
+            myRobot.turn(-140);
+            myRobot.waitForTick(5000);
+            myRobot.moveForward(7000, 1);
             myRobot.turn(-10);
             myRobot.moveForward(750, 0.5);
-            myRobot.turn(-40);
+            myRobot.turn(-10);
             myRobot.moveForward(300, 0.5);
 
 //            double initialPos = myRobot.leftFrontMotor.getCurrentPosition();

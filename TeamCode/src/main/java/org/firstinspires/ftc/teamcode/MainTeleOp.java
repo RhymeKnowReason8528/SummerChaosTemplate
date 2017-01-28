@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp (name = "TeleOp")
-public class BasicTeleOp extends LinearOpMode {
+public class MainTeleOp extends LinearOpMode {
 
 
     private Robot myRobot;

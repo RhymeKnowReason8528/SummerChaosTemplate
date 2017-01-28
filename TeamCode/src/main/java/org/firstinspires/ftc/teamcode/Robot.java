@@ -56,6 +56,8 @@ public class Robot {
     final static double FAST_LIMIT_GYRO = 0.8;
     final static double SLOW_LIMIT_GYRO = 0.2;
     final double DRIVE_GAIN = .005;
+    final double LAUNCHER_ENGAGED = 0.1;
+    final double LAUNCHER_DISENGAGED = 1;
 
     enum CollectorState {
         RUNNING_FORWARD,
@@ -303,11 +305,11 @@ public class Robot {
         }
     }
     public void engageLauncher() {
-        launcherServo.setPosition(0.1);
+        launcherServo.setPosition(LAUNCHER_ENGAGED);
     }
 
     public void disengageLauncher() {
-        launcherServo.setPosition(1);
+        launcherServo.setPosition(LAUNCHER_DISENGAGED);
         waitForTick(500);
         isLauncherPulledBack = false;
     }

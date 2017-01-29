@@ -328,11 +328,11 @@ public class Robot {
         double beginingTime = linearOpMode.getRuntime();
 
         if (initMethod) {
-            while (!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67) {
+            while (!launcherLimitTouchSensor.isPressed()) {//It took 1.67 seconds to pull back the launcher
                 launcherMotor.setPower(1);
             }
         } else {
-            while (!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67 && linearOpMode.opModeIsActive()) {
+            while (!launcherLimitTouchSensor.isPressed() && linearOpMode.opModeIsActive()) {
                 launcherMotor.setPower(1);
             }
         }

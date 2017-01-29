@@ -124,6 +124,7 @@ public class Robot {
         leftRearMotor.setDirection(DcMotor.Direction.REVERSE);
 
         collectorMotor = hwMap.dcMotor.get("collector");
+        collectorMotor.setDirection(DcMotor.Direction.REVERSE); // Remove this line unless using the NeveRest 3.7 motor.
 
         launcherMotor = hwMap.dcMotor.get("launcher_motor");
         launcherServo = hwMap.servo.get("launcher_servo");
@@ -347,10 +348,10 @@ public class Robot {
     }
 
     public void runCollector() {
-        if(collectorState == CollectorState.RUNNING_FORWARD) {
-            collectorMotor.setPower(1);
+        if(collectorState == CollectorState.RUNNING_FORWARD) {//Used to be at 1 and -1
+            collectorMotor.setPower(0.75);
         } else if (collectorState == CollectorState.RUNNING_BACKWARD){
-            collectorMotor.setPower(-1);
+            collectorMotor.setPower(-0.75);
         } else if (collectorState == CollectorState.STOPPED){
             collectorMotor.setPower(0);
         }

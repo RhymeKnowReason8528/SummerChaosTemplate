@@ -56,6 +56,8 @@ public class Robot {
     final static double FAST_LIMIT_GYRO = 0.8;
     final static double SLOW_LIMIT_GYRO = 0.2;
     final double DRIVE_GAIN = .005;
+    final double LAUNCHER_ENGAGED = 0.1;
+    final double LAUNCHER_DISENGAGED = 1;
 
     enum CollectorState {
         RUNNING_FORWARD,
@@ -122,6 +124,7 @@ public class Robot {
         leftRearMotor.setDirection(DcMotor.Direction.REVERSE);
 
         collectorMotor = hwMap.dcMotor.get("collector");
+        collectorMotor.setDirection(DcMotor.Direction.REVERSE); // Remove this line unless using the NeveRest 3.7 motor.
 
         launcherMotor = hwMap.dcMotor.get("launcher_motor");
         launcherServo = hwMap.servo.get("launcher_servo");
@@ -303,11 +306,11 @@ public class Robot {
         }
     }
     public void engageLauncher() {
-        launcherServo.setPosition(0.1);
+        launcherServo.setPosition(LAUNCHER_ENGAGED);
     }
 
     public void disengageLauncher() {
-        launcherServo.setPosition(1);
+        launcherServo.setPosition(LAUNCHER_DISENGAGED);
         waitForTick(500);
         isLauncherPulledBack = false;
     }
@@ -326,11 +329,11 @@ public class Robot {
         double beginingTime = linearOpMode.getRuntime();
 
         if (initMethod) {
-            while (!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67) {
+            while (!launcherLimitTouchSensor.isPressed()) {//It took 1.67 seconds to pull back the launcher
                 launcherMotor.setPower(1);
             }
         } else {
-            while (!launcherLimitTouchSensor.isPressed() && linearOpMode.getRuntime() < beginingTime + 1.67 && linearOpMode.opModeIsActive()) {
+            while (!launcherLimitTouchSensor.isPressed() && linearOpMode.opModeIsActive()) {
                 launcherMotor.setPower(1);
             }
         }
@@ -345,10 +348,10 @@ public class Robot {
     }
 
     public void runCollector() {
-        if(collectorState == CollectorState.RUNNING_FORWARD) {
-            collectorMotor.setPower(1);
+        if(collectorState == CollectorState.RUNNING_FORWARD) {//Used to be at 1 and -1
+            collectorMotor.setPower(0.75);
         } else if (collectorState == CollectorState.RUNNING_BACKWARD){
-            collectorMotor.setPower(-1);
+            collectorMotor.setPower(-0.75);
         } else if (collectorState == CollectorState.STOPPED){
             collectorMotor.setPower(0);
         }

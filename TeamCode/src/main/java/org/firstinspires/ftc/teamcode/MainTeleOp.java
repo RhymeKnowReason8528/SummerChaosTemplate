@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
  * Created by RobotK on 10/27/2016.
  */
 
-@TeleOp (name = "TeleOp")
+@TeleOp(name = "TeleOp")
 public class MainTeleOp extends LinearOpMode {
 
 
@@ -32,10 +29,10 @@ public class MainTeleOp extends LinearOpMode {
             BL = BL / mv;
             BR = BR / mv;
         }
-            myRobot.leftFrontMotor.setPower(FL);
-            myRobot.leftRearMotor.setPower(BL);
-            myRobot.rightFrontMotor.setPower(FR);
-            myRobot.rightRearMotor.setPower(BR);
+        myRobot.leftFrontMotor.setPower(FL);
+        myRobot.leftRearMotor.setPower(BL);
+        myRobot.rightFrontMotor.setPower(FR);
+        myRobot.rightRearMotor.setPower(BR);
     }
 
     private double max(double... args) {
@@ -65,9 +62,9 @@ public class MainTeleOp extends LinearOpMode {
             mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
             myRobot.runCollector();
 
-            if(gamepad2.right_bumper || gamepad1.right_bumper) {
+            if (gamepad2.right_bumper || gamepad1.right_bumper) {
                 myRobot.collectorState = Robot.CollectorState.RUNNING_FORWARD;
-            } else if(gamepad2.right_trigger > 0.5 || gamepad1.right_trigger > 0.5) {
+            } else if (gamepad2.right_trigger > 0.5 || gamepad1.right_trigger > 0.5) {
                 myRobot.collectorState = Robot.CollectorState.STOPPED;
             } else if (gamepad2.left_bumper || gamepad1.left_bumper) {
                 myRobot.collectorState = Robot.CollectorState.RUNNING_BACKWARD;
@@ -95,15 +92,15 @@ public class MainTeleOp extends LinearOpMode {
 //
 //            telemetry.update();
             myRobot.waitForTick(20);
-       }
+        }
     }
 
     private double scaleInput(double dVal) {
-        double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.15, 0.18, 0.24, 0.30, 0.36, 0.43, 0.50, 0.60,
-                                0.72, 0.85, 1.00, 1.00};
+        double[] scaleArray = {0.0, 0.05, 0.09, 0.10, 0.15, 0.18, 0.24, 0.30, 0.36, 0.43, 0.50, 0.60,
+                0.72, 0.85, 1.00, 1.00};
 
         int index = (int) (dVal * 15.0);
-        if(index < 0) {
+        if (index < 0) {
             index = -index;
         } else if (index > 15) {
             index = 15;

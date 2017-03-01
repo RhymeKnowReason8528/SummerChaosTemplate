@@ -51,23 +51,22 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "Gyro Test")
 public class GyroTest extends LinearOpMode {
 
-  private Robot myRobot = new Robot(this);
+    private Robot myRobot = new Robot(this);
 
- // ColorSensor colorSensor;    // Hardware Device Object
+    // ColorSensor colorSensor;    // Hardware Device Object
 
 
+    @Override
+    public void runOpMode() throws InterruptedException {
+        myRobot.init(hardwareMap);
 
-  @Override
-  public void runOpMode() throws InterruptedException {
-    myRobot.init(hardwareMap);
+        waitForStart();
 
-    waitForStart();
+        while (opModeIsActive()) {
 
-    while (opModeIsActive()) {
+            myRobot.turn(360);
 
-      myRobot.turn(360);
-
-      requestOpModeStop();
+            requestOpModeStop();
+        }
     }
-  }
 }

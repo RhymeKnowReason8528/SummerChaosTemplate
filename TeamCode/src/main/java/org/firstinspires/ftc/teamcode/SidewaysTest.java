@@ -34,7 +34,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 /*
  *
@@ -57,7 +56,6 @@ public class SidewaysTest extends LinearOpMode {
     private Robot myRobot = new Robot(this);
 
     // ColorSensor colorSensor;    // Hardware Device Object
-
 
 
     @Override

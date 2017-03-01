@@ -6,7 +6,6 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -71,17 +70,17 @@ public class Robot {
         return isLauncherPulledBack;
     }
 
-    public static enum Comparison{
-        LESS_THAN{
+    public static enum Comparison {
+        LESS_THAN {
             @Override
             public boolean evaluate(double x1, double x2) {
-                return x1<x2;
+                return x1 < x2;
             }
         },
         GREATER_THAN {
             @Override
             public boolean evaluate(double x1, double x2) {
-                return x1>x2;
+                return x1 > x2;
             }
         };
 
@@ -90,12 +89,12 @@ public class Robot {
 
     Comparison comparisonToUse;
 
-    public void calibrateGyro () throws InterruptedException {
+    public void calibrateGyro() throws InterruptedException {
         gyro.calibrate();
         linearOpMode.telemetry.addData("calibrating", true);
         linearOpMode.telemetry.update();
         int calibrationTicks = 0;
-        while(gyro.isCalibrating()){
+        while (gyro.isCalibrating()) {
             calibrationTicks++;
             waitForTick(200);
             linearOpMode.telemetry.addData("Gyro Calibration Ticks", calibrationTicks);
@@ -112,6 +111,7 @@ public class Robot {
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) throws InterruptedException {
+
         // save reference to HW Map
         hwMap = ahwMap;
 
@@ -131,7 +131,7 @@ public class Robot {
 
         launcherLimitTouchSensor = hwMap.touchSensor.get("launcher_limit_sensor");
         colorSensor = hwMap.colorSensor.get("beacon_sensor");
-        gyro = (ModernRoboticsI2cGyro)hwMap.gyroSensor.get("gyro_sensor");
+        gyro = (ModernRoboticsI2cGyro) hwMap.gyroSensor.get("gyro_sensor");
 
         // Set all motors to zero power
         leftFrontMotor.setPower(0);
@@ -170,7 +170,7 @@ public class Robot {
     }
 
 
-    public boolean turn (double targetHeading) throws InterruptedException {
+    public boolean turn(double targetHeading) throws InterruptedException {
         double currentHeading = gyro.getIntegratedZValue();
         double adjustedTargetHeading = targetHeading + currentHeading;
 
@@ -179,8 +179,7 @@ public class Robot {
 
         if (currentHeading < adjustedTargetHeading) {
             comparisonToUse = Comparison.LESS_THAN;
-        }
-        else {
+        } else {
             comparisonToUse = Comparison.GREATER_THAN;
         }
 
@@ -199,7 +198,7 @@ public class Robot {
 
 
             //issue is with the following code, so I temporarily moved the power settings above it.
-            if(driveSteering > FAST_LIMIT_GYRO) {
+            if (driveSteering > FAST_LIMIT_GYRO) {
                 driveSteering = FAST_LIMIT_GYRO;
                 linearOpMode.telemetry.addData("Limiting", "At maximum speed positive");
             } else if (driveSteering < -FAST_LIMIT_GYRO) {
@@ -207,10 +206,9 @@ public class Robot {
                 linearOpMode.telemetry.addData("Limiting", "At maximum speed negative");
             } else if (driveSteering < SLOW_LIMIT_GYRO && driveSteering > -SLOW_LIMIT_GYRO) {
                 linearOpMode.telemetry.addData("Limiting", "At minimum speed");
-                if(comparisonToUse == Comparison.LESS_THAN) {
+                if (comparisonToUse == Comparison.LESS_THAN) {
                     driveSteering = SLOW_LIMIT_GYRO;
-                }
-                else {
+                } else {
                     driveSteering = -SLOW_LIMIT_GYRO;
                 }
             }
@@ -254,10 +252,10 @@ public class Robot {
                 Thread.currentThread().interrupt();
             }
         }
-
-        // Reset the cycle clock for the next pass.
+        //Reset the cycle clock for the next pass.
         period.reset();
     }
+
 
     public void moveForward(double distance, double speed) {
         double encoderSubtractor = leftFrontMotor.getCurrentPosition();
@@ -312,6 +310,7 @@ public class Robot {
             rightRearMotor.setPower(0);
         }
     }
+
     public void engageLauncher() {
         launcherServo.setPosition(LAUNCHER_ENGAGED);
     }
@@ -355,11 +354,11 @@ public class Robot {
     }
 
     public void runCollector() {
-        if(collectorState == CollectorState.RUNNING_FORWARD) {//Used to be at 1 and -1
+        if (collectorState == CollectorState.RUNNING_FORWARD) {//Used to be at 1 and -1
             collectorMotor.setPower(0.75);
-        } else if (collectorState == CollectorState.RUNNING_BACKWARD){
+        } else if (collectorState == CollectorState.RUNNING_BACKWARD) {
             collectorMotor.setPower(-0.75);
-        } else if (collectorState == CollectorState.STOPPED){
+        } else if (collectorState == CollectorState.STOPPED) {
             collectorMotor.setPower(0);
         }
     }

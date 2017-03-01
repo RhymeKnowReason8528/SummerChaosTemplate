@@ -33,7 +33,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 /*
  *
@@ -52,41 +51,41 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "Launch Particle Blue")
 public class launchParticleBlue extends LinearOpMode {
 
-  private Robot myRobot = new Robot(this);
+    private Robot myRobot = new Robot(this);
 
- // ColorSensor colorSensor;    // Hardware Device Object
+    // ColorSensor colorSensor;    // Hardware Device Object
 
 
-  @Override
-  public void runOpMode() throws InterruptedException {
+    @Override
+    public void runOpMode() throws InterruptedException {
 
-    myRobot.init(hardwareMap);
+        myRobot.init(hardwareMap);
 
-    // hsvValues is an array that will hold the hue, saturation, and value information.
-    float hsvValues[] = {0F,0F,0F};
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F, 0F, 0F};
 
-    telemetry.addData("Runtime1", getRuntime());
+        telemetry.addData("Runtime1", getRuntime());
 
-    myRobot.initLauncher(true);
-    // wait for the start button to be pressed.
-    myRobot.waitForTick(1500);
+        myRobot.initLauncher(true);
+        // wait for the start button to be pressed.
+        myRobot.waitForTick(1500);
 
-    telemetry.addData("Runtime2", getRuntime());
+        telemetry.addData("Runtime2", getRuntime());
 
-    telemetry.update();
+        telemetry.update();
 
-    waitForStart();
+        waitForStart();
 
-    myRobot.launchAndReload();
-    // while the op mode is active, loop and read the RGB data.
-    // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-    while (opModeIsActive()) {
-      myRobot.leftFrontMotor.setPower(0);
-      myRobot.leftRearMotor.setPower(0);
-      myRobot.rightFrontMotor.setPower(0);
-      myRobot.rightRearMotor.setPower(0);
+        myRobot.launchAndReload();
+        // while the op mode is active, loop and read the RGB data.
+        // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
+        while (opModeIsActive()) {
+            myRobot.leftFrontMotor.setPower(0);
+            myRobot.leftRearMotor.setPower(0);
+            myRobot.rightFrontMotor.setPower(0);
+            myRobot.rightRearMotor.setPower(0);
 
+        }
+        requestOpModeStop();
     }
-    requestOpModeStop();
-  }
 }

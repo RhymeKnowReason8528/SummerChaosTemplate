@@ -1,4 +1,4 @@
-  /* Copyright (c) 2015 Qualcomm Technologies Inc
+/* Copyright (c) 2015 Qualcomm Technologies Inc
 
 All rights reserved.
 
@@ -33,7 +33,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 /*
  *
@@ -52,45 +51,45 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "Blue Ramp")
 public class ParkOnBlueRamp extends LinearOpMode {
 
-  private Robot myRobot = new Robot(this);
+    private Robot myRobot = new Robot(this);
 
- // ColorSensor colorSensor;    // Hardware Device Object
+    // ColorSensor colorSensor;    // Hardware Device Object
 
 
-  @Override
-  public void runOpMode() throws InterruptedException {
+    @Override
+    public void runOpMode() throws InterruptedException {
 
-    myRobot.init(hardwareMap);
+        myRobot.init(hardwareMap);
 
-    // hsvValues is an array that will hold the hue, saturation, and value information.
-    float hsvValues[] = {0F,0F,0F};
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F, 0F, 0F};
 
-    // values is a reference to the hsvValues array.
-    final float values[] = hsvValues;
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
 
-    // get a reference to the RelativeLayout so we can change the background
-    // color of the Robot Controller app to match the hue detected by the RGB sensor.
-   // final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
+        // get a reference to the RelativeLayout so we can change the background
+        // color of the Robot Controller app to match the hue detected by the RGB sensor.
+        // final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
-    // bPrevState and bCurrState represent the previous and current state of the button.
-    boolean bPrevState = false;
-    boolean bCurrState = false;
+        // bPrevState and bCurrState represent the previous and current state of the button.
+        boolean bPrevState = false;
+        boolean bCurrState = false;
 
-    // bLedOn represents the state of the LED.
-    boolean bLedOn = true;
+        // bLedOn represents the state of the LED.
+        boolean bLedOn = true;
 
-    // get a reference to our ColorSensor object.
-    //colorSensor = hardwareMap.colorSensor.get("sensor_color");
+        // get a reference to our ColorSensor object.
+        //colorSensor = hardwareMap.colorSensor.get("sensor_color");
 
-    // Set the LED in the beginning
-    //colorSensor.enableLed(bLedOn);
+        // Set the LED in the beginning
+        //colorSensor.enableLed(bLedOn);
 
-    // wait for the start button to be pressed.
-    waitForStart();
+        // wait for the start button to be pressed.
+        waitForStart();
 
-    // while the op mode is active, loop and read the RGB data.
-    // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-    while (opModeIsActive()) {
+        // while the op mode is active, loop and read the RGB data.
+        // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
+        while (opModeIsActive()) {
 
      /* // check the status of the x button on either gamepad.
       bCurrState = gamepad1.x;
@@ -128,32 +127,32 @@ public class ParkOnBlueRamp extends LinearOpMode {
 
       telemetry.update();
       */
-      myRobot.moveForward(1540, 1);
+            myRobot.moveForward(1540, 1);
 
-      double encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
+            double encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
 
-      while(myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor < 1150 && opModeIsActive()) {
-        myRobot.leftFrontMotor.setPower(1);
-        myRobot.leftRearMotor.setPower(1);
-        myRobot.rightFrontMotor.setPower(-1);
-        myRobot.rightRearMotor.setPower(-1);
-      }
+            while (myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor < 1150 && opModeIsActive()) {
+                myRobot.leftFrontMotor.setPower(1);
+                myRobot.leftRearMotor.setPower(1);
+                myRobot.rightFrontMotor.setPower(-1);
+                myRobot.rightRearMotor.setPower(-1);
+            }
 
-      encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
+            encoderSubtractor = myRobot.leftFrontMotor.getCurrentPosition();
 
-      while(myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor < 2780 && opModeIsActive()) {
-        myRobot.leftFrontMotor.setPower(0.3);
-        myRobot.leftRearMotor.setPower(0.3);
-        myRobot.rightFrontMotor.setPower(0.3);
-        myRobot.rightRearMotor.setPower(0.3);
-      }
+            while (myRobot.leftFrontMotor.getCurrentPosition() - encoderSubtractor < 2780 && opModeIsActive()) {
+                myRobot.leftFrontMotor.setPower(0.3);
+                myRobot.leftRearMotor.setPower(0.3);
+                myRobot.rightFrontMotor.setPower(0.3);
+                myRobot.rightRearMotor.setPower(0.3);
+            }
 
-      myRobot.leftFrontMotor.setPower(0);
-      myRobot.leftRearMotor.setPower(0);
-      myRobot.rightFrontMotor.setPower(0);
-      myRobot.rightRearMotor.setPower(0);
+            myRobot.leftFrontMotor.setPower(0);
+            myRobot.leftRearMotor.setPower(0);
+            myRobot.rightFrontMotor.setPower(0);
+            myRobot.rightRearMotor.setPower(0);
 
-      requestOpModeStop();
+            requestOpModeStop();
+        }
     }
-  }
 }

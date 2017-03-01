@@ -54,50 +54,49 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Disabled
 public class MaxSpeedTest extends LinearOpMode {
 
-  private Robot myRobot = new Robot(this);
+    private Robot myRobot = new Robot(this);
 
- // ColorSensor colorSensor;    // Hardware Device Object
-
-
-
-  @Override
-  public void runOpMode() throws InterruptedException {
-    myRobot.init(hardwareMap);
-
-    myRobot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    myRobot.rightRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    myRobot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    myRobot.leftRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-    waitForStart();
+    // ColorSensor colorSensor;    // Hardware Device Object
 
 
-    while (opModeIsActive()) {
+    @Override
+    public void runOpMode() throws InterruptedException {
+        myRobot.init(hardwareMap);
 
-      double time = this.getRuntime();
+        myRobot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        myRobot.rightRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        myRobot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        myRobot.leftRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-      while(this.getRuntime() - time < 5 && opModeIsActive()) {
-        myRobot.rightFrontMotor.setPower(1);
-        myRobot.rightRearMotor.setPower(1);
-        myRobot.leftFrontMotor.setPower(1);
-        myRobot.leftRearMotor.setPower(1);
-      }
+        waitForStart();
 
-      myRobot.rightFrontMotor.setPower(0);
-      myRobot.rightRearMotor.setPower(0);
-      myRobot.leftFrontMotor.setPower(0);
-      myRobot.leftRearMotor.setPower(0);
 
-      while(opModeIsActive()) {
-        telemetry.addData("Right front max speed", myRobot.rightFrontMotor.getCurrentPosition() / 5);
-        telemetry.addData("Right rear max speed", myRobot.rightRearMotor.getCurrentPosition() / 5);
-        telemetry.addData("Left front max speed", myRobot.leftFrontMotor.getCurrentPosition() / 5);
-        telemetry.addData("Left rear max speed", myRobot.leftRearMotor.getCurrentPosition() / 5);
+        while (opModeIsActive()) {
 
-        telemetry.update();
-      }
+            double time = this.getRuntime();
 
-      requestOpModeStop();
+            while (this.getRuntime() - time < 5 && opModeIsActive()) {
+                myRobot.rightFrontMotor.setPower(1);
+                myRobot.rightRearMotor.setPower(1);
+                myRobot.leftFrontMotor.setPower(1);
+                myRobot.leftRearMotor.setPower(1);
+            }
+
+            myRobot.rightFrontMotor.setPower(0);
+            myRobot.rightRearMotor.setPower(0);
+            myRobot.leftFrontMotor.setPower(0);
+            myRobot.leftRearMotor.setPower(0);
+
+            while (opModeIsActive()) {
+                telemetry.addData("Right front max speed", myRobot.rightFrontMotor.getCurrentPosition() / 5);
+                telemetry.addData("Right rear max speed", myRobot.rightRearMotor.getCurrentPosition() / 5);
+                telemetry.addData("Left front max speed", myRobot.leftFrontMotor.getCurrentPosition() / 5);
+                telemetry.addData("Left rear max speed", myRobot.leftRearMotor.getCurrentPosition() / 5);
+
+                telemetry.update();
+            }
+
+            requestOpModeStop();
+        }
     }
-  }
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by RobotK on 10/27/2016.
@@ -21,6 +22,8 @@ public class ValueTweak extends LinearOpMode {
 
         myRobot.initLauncher(true);
 
+        ElapsedTime elapsedTime = new ElapsedTime();
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -38,7 +41,7 @@ public class ValueTweak extends LinearOpMode {
             telemetry.addData("Servo position", myRobot.launcherServo.getPosition());
 
             telemetry.update();
-            myRobot.waitForTick(20);
+            myRobot.waitForTick(20, elapsedTime);
         }
     }
 }

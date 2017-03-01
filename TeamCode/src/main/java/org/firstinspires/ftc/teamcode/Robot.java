@@ -47,7 +47,6 @@ public class Robot {
 
     /* Local OpMode members. */
     private HardwareMap hwMap = null;
-    private ElapsedTime period = new ElapsedTime();
     private LinearOpMode linearOpMode;
     private Thread pullbackThread;
     private DcMotor ENCODER_MOTOR; //initialize in init
@@ -91,12 +90,13 @@ public class Robot {
 
     public void calibrateGyro() throws InterruptedException {
         gyro.calibrate();
+        ElapsedTime elapsedTime = new ElapsedTime();
         linearOpMode.telemetry.addData("calibrating", true);
         linearOpMode.telemetry.update();
         int calibrationTicks = 0;
         while (gyro.isCalibrating()) {
             calibrationTicks++;
-            waitForTick(200);
+            waitForTick(200, elapsedTime);
             linearOpMode.telemetry.addData("Gyro Calibration Ticks", calibrationTicks);
             linearOpMode.telemetry.update();
         }
@@ -240,9 +240,9 @@ public class Robot {
      *
      * @param periodMs The length of time you want each loop cycle to take
      */
-    public void waitForTick(long periodMs) { //Use ONLY within a loop
+    public void waitForTick(long periodMs, ElapsedTime elapsedTime) {
 
-        long remaining = periodMs - (long) period.milliseconds();
+        long remaining = periodMs - (long) elapsedTime.milliseconds();
 
         // sleep for the remaining portion of the regular cycle period.
         if (remaining > 0) {
@@ -253,9 +253,8 @@ public class Robot {
             }
         }
         //Reset the cycle clock for the next pass.
-        period.reset();
+        elapsedTime.reset();
     }
-
 
     public void moveForward(double distance, double speed) {
         double encoderSubtractor = leftFrontMotor.getCurrentPosition();
@@ -332,15 +331,19 @@ public class Robot {
         engageLauncher();
         Thread.sleep(500);
 
+        ElapsedTime elapsedTime = new ElapsedTime();
+
         double beginingTime = linearOpMode.getRuntime();
 
         if (initMethod) {
             while (!launcherLimitTouchSensor.isPressed()) {//It took 1.67 seconds to pull back the launcher
                 launcherMotor.setPower(1);
+                waitForTick(10, elapsedTime);
             }
         } else {
             while (!launcherLimitTouchSensor.isPressed() && linearOpMode.opModeIsActive()) {
                 launcherMotor.setPower(1);
+                waitForTick(10, elapsedTime);
             }
         }
         launcherMotor.setPower(0);

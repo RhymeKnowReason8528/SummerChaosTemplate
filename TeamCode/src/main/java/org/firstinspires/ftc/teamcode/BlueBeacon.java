@@ -61,6 +61,8 @@ public class BlueBeacon extends LinearOpMode {
 
         myRobot.init(hardwareMap);
 
+
+
         waitForStart();
 
         while (opModeIsActive()) {

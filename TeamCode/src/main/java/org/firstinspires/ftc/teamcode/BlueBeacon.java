@@ -65,15 +65,15 @@ public class BlueBeacon extends LinearOpMode {
 
         while (opModeIsActive()) {
             myRobot.disengageLauncher();
-            myRobot.waitForTick(1000);
+            Thread.sleep(1000);
             myRobot.initLauncher(false);
             myRobot.collectorState = Robot.CollectorState.RUNNING_FORWARD;
             myRobot.runCollector();
-            myRobot.waitForTick(2000);
+            Thread.sleep(2000);
             myRobot.collectorState = Robot.CollectorState.STOPPED;
             myRobot.runCollector();
             myRobot.disengageLauncher();
-            myRobot.waitForTick(1000);
+            Thread.sleep(1000);
             myRobot.initLauncher(false);
 
             myRobot.moveForward(-8080, 1);

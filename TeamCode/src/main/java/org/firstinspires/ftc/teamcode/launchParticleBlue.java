@@ -68,7 +68,7 @@ public class launchParticleBlue extends LinearOpMode {
 
         myRobot.initLauncher(true);
         // wait for the start button to be pressed.
-        myRobot.waitForTick(1500);
+        Thread.sleep(1500);
 
         telemetry.addData("Runtime2", getRuntime());
 

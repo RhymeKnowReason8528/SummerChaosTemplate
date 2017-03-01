@@ -315,9 +315,9 @@ public class Robot {
         launcherServo.setPosition(LAUNCHER_ENGAGED);
     }
 
-    public void disengageLauncher() {
+    public void disengageLauncher() throws InterruptedException {
         launcherServo.setPosition(LAUNCHER_DISENGAGED);
-        waitForTick(500);
+        Thread.sleep(500);
         isLauncherPulledBack = false;
     }
 
@@ -328,9 +328,9 @@ public class Robot {
         }
     }
 
-    public boolean initLauncher(boolean initMethod) {
+    public boolean initLauncher(boolean initMethod) throws InterruptedException {
         engageLauncher();
-        waitForTick(500);
+        Thread.sleep(500);
 
         double beginingTime = linearOpMode.getRuntime();
 
@@ -367,8 +367,12 @@ public class Robot {
 
         @Override
         public void run() {
-            disengageLauncher();
-            initLauncher(false);
+            try {
+                disengageLauncher();
+                initLauncher(false);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

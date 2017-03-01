@@ -64,24 +64,20 @@ public class RedBeacon extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-
-            myRobot.moveForward(-800, 0.5);
             myRobot.disengageLauncher();
             myRobot.waitForTick(1000);
             myRobot.initLauncher(false);
-
             myRobot.collectorState = Robot.CollectorState.RUNNING_FORWARD;
             myRobot.runCollector();
-            myRobot.waitForTick(4000);
+            myRobot.waitForTick(2000);
             myRobot.collectorState = Robot.CollectorState.STOPPED;
             myRobot.runCollector();
-
             myRobot.disengageLauncher();
             myRobot.waitForTick(1000);
             myRobot.initLauncher(false);
 
-            myRobot.turn(70);
-            myRobot.moveForward(4320, 1);
+            myRobot.moveForward(-8080, 1);
+            myRobot.turn(-25);
 //            myRobot.turn(10);
 //            myRobot.moveForward(750, 0.5);
 //            myRobot.turn(40);

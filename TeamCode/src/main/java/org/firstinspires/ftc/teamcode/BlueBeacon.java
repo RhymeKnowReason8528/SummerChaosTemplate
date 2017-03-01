@@ -66,56 +66,22 @@ public class BlueBeacon extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-
-            myRobot.moveForward(-1440, 0.5);
             myRobot.disengageLauncher();
             myRobot.waitForTick(1000);
             myRobot.initLauncher(false);
-
             myRobot.collectorState = Robot.CollectorState.RUNNING_FORWARD;
             myRobot.runCollector();
             myRobot.waitForTick(2000);
             myRobot.collectorState = Robot.CollectorState.STOPPED;
             myRobot.runCollector();
-
             myRobot.disengageLauncher();
             myRobot.waitForTick(1000);
             myRobot.initLauncher(false);
 
-            myRobot.turn(-140);
-            myRobot.waitForTick(5000);
-            myRobot.moveForward(7000, 1);
-            myRobot.turn(-10);
-            myRobot.moveForward(750, 0.5);
-            myRobot.turn(-10);
-            myRobot.moveForward(300, 0.5);
+            myRobot.moveForward(-8080, 1);
+            myRobot.turn(25);
+            myRobot.moveForward(2000, 1);
 
-//            double initialPos = myRobot.leftFrontMotor.getCurrentPosition();
-//            if (myRobot.colorSensor.red() > myRobot.colorSensor.blue()) {
-//                myRobot.moveForward(-300, 1);
-//                while (myRobot.rightFrontMotor.getCurrentPosition() - initialPos < 100) {
-//                    myRobot.rightFrontMotor.setPower(1);
-//                    myRobot.rightRearMotor.setPower(1);
-//                    myRobot.leftFrontMotor.setPower(-1);
-//                    myRobot.leftRearMotor.setPower(-1);
-//                }
-//                myRobot.rightFrontMotor.setPower(0);
-//                myRobot.rightRearMotor.setPower(0);
-//                myRobot.leftFrontMotor.setPower(0);
-//                myRobot.leftRearMotor.setPower(0);
-//            } else {
-//                while (myRobot.rightFrontMotor.getCurrentPosition() - initialPos < 100) {
-//                    myRobot.rightFrontMotor.setPower(1);
-//                    myRobot.rightRearMotor.setPower(1);
-//                    myRobot.leftFrontMotor.setPower(-1);
-//                    myRobot.leftRearMotor.setPower(-1);
-//                }
-//                myRobot.rightFrontMotor.setPower(0);
-//                myRobot.rightRearMotor.setPower(0);
-//                myRobot.leftFrontMotor.setPower(0);
-//                myRobot.leftRearMotor.setPower(0);
-//            }
-//            myRobot.turn(-30);
             requestOpModeStop();
         }
     }

@@ -84,16 +84,16 @@ public class MainTeleOp extends LinearOpMode {
             }*/
 
 
-            telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
-            telemetry.addData("Collector state", myRobot.collectorState);
-
-            if(myRobot.isLauncherPulledBack()) {
-                telemetry.addData("Launcher state", "Ready");
-            } else {
-                telemetry.addData("Launcher state", "Launching");
-            }
-
-            telemetry.update();
+//            telemetry.addData("Touch sensor", myRobot.launcherLimitTouchSensor.isPressed());
+//            telemetry.addData("Collector state", myRobot.collectorState);
+//
+//            if(myRobot.isLauncherPulledBack()) {
+//                telemetry.addData("Launcher state", "Ready");
+//            } else {
+//                telemetry.addData("Launcher state", "Launching");
+//            }
+//
+//            telemetry.update();
             myRobot.waitForTick(20);
        }
     }

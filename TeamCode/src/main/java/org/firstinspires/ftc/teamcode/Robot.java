@@ -346,8 +346,8 @@ public class Robot {
         }
         launcherMotor.setPower(0);
         isLauncherPulledBack = true;
-//        opmode.telemetry.addData("status", "Launcher ready to fire");
-//        opmode.telemetry.update();
+        linearOpMode.telemetry.addData("status", "Launcher ready to fire");
+        linearOpMode.telemetry.update();
 
         Log.i("RKR", "Pullback took " + (linearOpMode.getRuntime() - beginingTime));
 

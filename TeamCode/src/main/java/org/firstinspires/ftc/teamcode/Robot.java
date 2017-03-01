@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
@@ -44,6 +45,7 @@ public class Robot {
     TouchSensor launcherLimitTouchSensor;
     ColorSensor colorSensor;
     ModernRoboticsI2cGyro gyro;
+    RkrTTS tts;
 
     /* Local OpMode members. */
     private HardwareMap hwMap = null;
@@ -111,6 +113,9 @@ public class Robot {
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) throws InterruptedException {
+
+        tts.init(hwMap.appContext);
+        tts.speakWords("Battery level is " + hwMap.voltageSensor);//TODO: Find out what to put after volatgeSensor. Should be getVoltage?
 
         // save reference to HW Map
         hwMap = ahwMap;

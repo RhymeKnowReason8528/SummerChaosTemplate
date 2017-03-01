@@ -235,7 +235,14 @@ public class Robot {
 
         return true;
     }
-    public void waitForTick(long periodMs) {
+
+    /**
+     * waitForTick should only be used within a loop (use Thread.sleep for other purposes). This is so that in a loop it waits
+     * at least for the time put in, but if the loop has already taken that long it will just pass over the method
+     *
+     * @param periodMs The length of time you want each loop cycle to take
+     */
+    public void waitForTick(long periodMs) { //Use ONLY within a loop
 
         long remaining = periodMs - (long) period.milliseconds();
 

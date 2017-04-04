@@ -10,7 +10,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.util.Locale;
 
 /**
  * This is NOT an opmode.
@@ -113,12 +116,10 @@ public class Robot {
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) throws InterruptedException {
-
-        tts.init(hwMap.appContext);
-        tts.speakWords("Battery level is " + hwMap.voltageSensor);//TODO: Find out what to put after volatgeSensor. Should be getVoltage?
-
-        // save reference to HW Map
         hwMap = ahwMap;
+
+        tts = new RkrTTS();
+        tts.init(hwMap.appContext);
 
         // Define and Initialize Motors
         leftFrontMotor = hwMap.dcMotor.get("left_front_drive");
@@ -168,8 +169,11 @@ public class Robot {
         launcherMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Define and initialize ALL installed servos.
 
+        tts.speakWords("Battery level is " + String.format(Locale.US, "%.2f", getBatteryVoltage()) + " Volts");
+        tts.speakWords("Go RhymeKnowReason!");
 
         calibrateGyro();
+
 
         ENCODER_MOTOR = leftFrontMotor;
     }
@@ -382,5 +386,17 @@ public class Robot {
                 e.printStackTrace();
             }
         }
+    }
+
+    double getBatteryVoltage() {
+        double result = Double.POSITIVE_INFINITY;
+        for (VoltageSensor sensor : hwMap.voltageSensor) {
+            sensor.getDeviceName();
+            double voltage = sensor.getVoltage();
+            if (voltage > 0) {
+                result = Math.min(result, voltage);
+            }
+        }
+        return result;
     }
 }

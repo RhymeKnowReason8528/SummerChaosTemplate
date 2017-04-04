@@ -4,6 +4,7 @@ import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -14,14 +15,23 @@ public class RkrTTS {
 
     private static TextToSpeech tts;
 
-    private static class TTSListener implements TextToSpeech.OnInitListener {
+    private static boolean isInitialized = false;
+
+    private static ArrayList<String> preInitSpeechStrings = new ArrayList<>();
+
+    private class TTSListener implements TextToSpeech.OnInitListener {
 
         @Override
         public void onInit(int initStatus) {
             if(initStatus == TextToSpeech.SUCCESS) {
+                Log.d("RKR", "TTS Init complete");
                 tts.setLanguage(Locale.US);
+                isInitialized = true;
+                for (String string : preInitSpeechStrings) {
+                    speakWords(string);
+                }
             } else {
-                Log.d("RKR", "ERROR!");
+                Log.d("RKR", "TTS Init FAILED!");
             }
         }
     }
@@ -31,6 +41,10 @@ public class RkrTTS {
     }
 
     public void speakWords(String speech) {
-        tts.speak(speech, TextToSpeech.QUEUE_ADD, null);
+        if(isInitialized == true) {
+            tts.speak(speech, TextToSpeech.QUEUE_ADD, null);
+        } else {
+            preInitSpeechStrings.add(speech);
+        }
     }
 }

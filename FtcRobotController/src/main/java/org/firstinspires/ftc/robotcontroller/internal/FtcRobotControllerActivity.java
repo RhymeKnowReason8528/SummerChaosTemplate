@@ -47,6 +47,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -55,6 +56,7 @@ import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.blocks.ftcrobotcontroller.BlocksActivity;
 import com.google.blocks.ftcrobotcontroller.ProgrammingModeActivity;
@@ -80,12 +82,16 @@ import com.qualcomm.ftccommon.configuration.RobotConfigFileManager;
 import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.hardware.HardwareFactory;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
+import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.configuration.Utility;
+import com.qualcomm.robotcore.hardware.usb.RobotUsbDevice;
+import com.qualcomm.robotcore.hardware.usb.ftdi.RobotUsbManagerFtdi;
 import com.qualcomm.robotcore.robocol.PeerAppRobotController;
 import com.qualcomm.robotcore.util.Dimmer;
 import com.qualcomm.robotcore.util.ImmersiveMode;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 import com.qualcomm.robotcore.util.RobotLog;
+import com.qualcomm.robotcore.util.SerialNumber;
 import com.qualcomm.robotcore.wifi.NetworkConnectionFactory;
 import com.qualcomm.robotcore.wifi.NetworkType;
 import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
@@ -496,6 +502,33 @@ public class FtcRobotControllerActivity extends Activity {
     HardwareFactory factory;
     RobotConfigFile file = cfgFileMgr.getActiveConfigAndUpdateUI();
     HardwareFactory hardwareFactory = new HardwareFactory(context);
+
+    /////////////////////////////////////////////////////////
+    // Custom code for hard-coding the configuration files //
+    /////////////////////////////////////////////////////////
+
+    try {
+      RobotUsbManagerFtdi usbManager = new RobotUsbManagerFtdi(this);
+      SerialNumber module2Cdim = new SerialNumber("AL026CB2");
+      RobotUsbDevice cdim = usbManager.openBySerialNumber(module2Cdim);
+      final Toast toast =  Toast.makeText(FtcRobotControllerActivity.this, "CDIM minor version: " + String.valueOf(cdim.getFirmwareVersion().minorVersion), Toast.LENGTH_LONG);
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+         toast.show();
+        }
+      });
+    } catch (RobotCoreException e) {
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          Toast.makeText(FtcRobotControllerActivity.this, "Module 1 CDIM not found!", Toast.LENGTH_LONG).show();
+        }
+      });
+      Log.e("RKR", "Module 1 CDIM not found!");
+      e.printStackTrace();
+    }
+
     try {
       hardwareFactory.setXmlPullParser(file.getXml());
     } catch (Resources.NotFoundException e) {

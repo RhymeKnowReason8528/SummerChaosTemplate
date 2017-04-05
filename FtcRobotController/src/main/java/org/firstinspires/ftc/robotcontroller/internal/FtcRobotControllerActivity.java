@@ -103,6 +103,8 @@ import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static com.ftdi.j2xx.D2xxManager.FT_DEVICE_UNKNOWN;
+
 public class FtcRobotControllerActivity extends Activity {
 
   public static final String TAG = "RCActivity";
@@ -145,7 +147,11 @@ public class FtcRobotControllerActivity extends Activity {
   protected class RobotRestarter implements Restarter {
 
     public void requestRestart() {
-      requestRobotRestart();
+      try {
+        requestRobotRestart();
+      } catch (RobotCoreException e) {
+        e.printStackTrace();
+      }
     }
 
   }
@@ -154,7 +160,11 @@ public class FtcRobotControllerActivity extends Activity {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
       FtcRobotControllerBinder binder = (FtcRobotControllerBinder) service;
-      onServiceBind(binder.getService());
+      try {
+        onServiceBind(binder.getService());
+      } catch (RobotCoreException e) {
+        e.printStackTrace();
+      }
     }
 
     @Override
@@ -287,7 +297,11 @@ public class FtcRobotControllerActivity extends Activity {
     RobotLog.vv(TAG, "onStart()");
 
     // Undo the effects of shutdownRobot() that we might have done in onStop()
-    updateUIAndRequestRobotSetup();
+    try {
+      updateUIAndRequestRobotSetup();
+    } catch (RobotCoreException e) {
+      e.printStackTrace();
+    }
 
     cfgFileMgr.getActiveConfigAndUpdateUI();
 
@@ -433,7 +447,11 @@ public class FtcRobotControllerActivity extends Activity {
     else if (id == R.id.action_restart_robot) {
       dimmer.handleDimTimer();
       AppUtil.getInstance().showToast(context, context.getString(R.string.toastRestartingRobot));
-      requestRobotRestart();
+      try {
+        requestRobotRestart();
+      } catch (RobotCoreException e) {
+        e.printStackTrace();
+      }
       return true;
     }
     else if (id == R.id.action_configure_robot) {
@@ -480,7 +498,7 @@ public class FtcRobotControllerActivity extends Activity {
     }
   }
 
-  public void onServiceBind(FtcRobotControllerService service) {
+  public void onServiceBind(FtcRobotControllerService service) throws RobotCoreException {
     RobotLog.vv(FtcRobotControllerService.TAG, "%s.controllerService=bound", TAG);
     controllerService = service;
     updateUI.setControllerService(controllerService);
@@ -488,7 +506,7 @@ public class FtcRobotControllerActivity extends Activity {
     updateUIAndRequestRobotSetup();
   }
 
-  private void updateUIAndRequestRobotSetup() {
+  private void updateUIAndRequestRobotSetup() throws RobotCoreException {
     if (controllerService != null) {
       callback.networkConnectionUpdate(controllerService.getNetworkConnectionStatus());
       callback.updateRobotStatus(controllerService.getRobotStatus());
@@ -496,7 +514,7 @@ public class FtcRobotControllerActivity extends Activity {
     }
   }
 
-  private void requestRobotSetup() {
+  private void requestRobotSetup() throws RobotCoreException {
     if (controllerService == null) return;
 
     HardwareFactory factory;
@@ -507,26 +525,28 @@ public class FtcRobotControllerActivity extends Activity {
     // Custom code for hard-coding the configuration files //
     /////////////////////////////////////////////////////////
 
-    try {
-      RobotUsbManagerFtdi usbManager = new RobotUsbManagerFtdi(this);
-      SerialNumber module2Cdim = new SerialNumber("AL026CB2");
-      RobotUsbDevice cdim = usbManager.openBySerialNumber(module2Cdim);
-      final Toast toast =  Toast.makeText(FtcRobotControllerActivity.this, "CDIM minor version: " + String.valueOf(cdim.getFirmwareVersion().minorVersion), Toast.LENGTH_LONG);
+    final RobotUsbManagerFtdi usbManager;
+    usbManager = new RobotUsbManagerFtdi(this);
+    if (usbManager.scanForDevices() > 0) {
+      Log.d("RKR", "" + usbManager.scanForDevices());
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
-         toast.show();
+          try {
+            Toast.makeText(FtcRobotControllerActivity.this, usbManager.scanForDevices() + "Device(s) connected to robot controller", Toast.LENGTH_LONG).show();
+          } catch (RobotCoreException e) {
+            e.printStackTrace();
+          }
         }
       });
-    } catch (RobotCoreException e) {
+    }else {
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
-          Toast.makeText(FtcRobotControllerActivity.this, "Module 1 CDIM not found!", Toast.LENGTH_LONG).show();
+          Toast.makeText(FtcRobotControllerActivity.this, "No devices found!", Toast.LENGTH_LONG).show();
         }
       });
-      Log.e("RKR", "Module 1 CDIM not found!");
-      e.printStackTrace();
+      Log.d("RKR", "Module 1 CDIM not found!");
     }
 
     try {
@@ -556,7 +576,7 @@ public class FtcRobotControllerActivity extends Activity {
     controllerService.shutdownRobot();
   }
 
-  private void requestRobotRestart() {
+  private void requestRobotRestart() throws RobotCoreException {
     requestRobotShutdown();
     requestRobotSetup();
   }

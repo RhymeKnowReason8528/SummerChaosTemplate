@@ -40,6 +40,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.wifi.WifiManager;
@@ -494,7 +495,6 @@ public class FtcRobotControllerActivity extends Activity {
         if (controllerService == null) return;
 
         HardwareFactory factory;
-        RobotConfigFile file = cfgFileMgr.getActiveConfigAndUpdateUI();
         HardwareFactory hardwareFactory = new HardwareFactory(context);
 
         /////////////////////////////////////////////////////////
@@ -503,6 +503,7 @@ public class FtcRobotControllerActivity extends Activity {
 
         final SerialNumber module1Cdim = new SerialNumber("AI02RI69");
         final SerialNumber module2Cdim = new SerialNumber("AL026CB2");
+        XmlResourceParser configToUse = null;
 
         try {
             final RobotUsbManagerFtdi usbManager;
@@ -521,13 +522,14 @@ public class FtcRobotControllerActivity extends Activity {
                 for(int i = 0; i < numberOfConnectedDevices; i++) {
                     currentSerialNumber = usbManager.getDeviceSerialNumberByIndex(i);
                     if(currentSerialNumber.equals(module1Cdim)) {
-                        //TODO: Use module 1 config
+                        configToUse = getResources().getXml(R.xml.module_1_config);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(FtcRobotControllerActivity.this, "Module 1 detected", Toast.LENGTH_SHORT).show();
                             }
                         });
+                        break;
                     } else if(currentSerialNumber.equals(module2Cdim)) {
                         //TODO: Use module 2 config
                         runOnUiThread(new Runnable() {
@@ -536,13 +538,15 @@ public class FtcRobotControllerActivity extends Activity {
                                 Toast.makeText(FtcRobotControllerActivity.this, "Module 2 detected", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    } else {
+                        break;
+                    } else if(i == numberOfConnectedDevices - 1) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(FtcRobotControllerActivity.this, "Couldn't find CDIM from either module", Toast.LENGTH_SHORT).show();
                             }
                         });
+                        //TODO: Skip the rest of setup
                     }
                 }
 
@@ -553,18 +557,26 @@ public class FtcRobotControllerActivity extends Activity {
                         Toast.makeText(FtcRobotControllerActivity.this, "No devices found, connect and power on your robot!", Toast.LENGTH_LONG).show();
                     }
                 });
+                //TODO: Skip the rest of setup
             }
         } catch (RobotCoreException e) {
             e.printStackTrace();
         }
 
         try {
-            hardwareFactory.setXmlPullParser(file.getXml());
+            if(configToUse != null){
+                hardwareFactory.setXmlPullParser(configToUse);
+            }
         } catch (Resources.NotFoundException e) {
-            file = RobotConfigFile.noConfig(cfgFileMgr);
+            //TODO: What we want to do , is have this code run whenever we don't find a matched config.
+           /* file = RobotConfigFile.noConfig(cfgFileMgr);
             hardwareFactory.setXmlPullParser(file.getXml());
-            cfgFileMgr.setActiveConfigAndUpdateUI(false, file);
+            cfgFileMgr.setActiveConfigAndUpdateUI(false, file); //TODO use this
+
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
         }
+        */
         factory = hardwareFactory;
 
         eventLoop = new FtcEventLoop(factory, createOpModeRegister(), callback, this, programmingModeController);
@@ -574,6 +586,7 @@ public class FtcRobotControllerActivity extends Activity {
         controllerService.setupRobot(eventLoop, idleLoop);
 
         passReceivedUsbAttachmentsToEventLoop();
+    }
     }
 
     protected OpModeRegister createOpModeRegister() {

@@ -89,6 +89,7 @@ import com.qualcomm.robotcore.util.Dimmer;
 import com.qualcomm.robotcore.util.ImmersiveMode;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 import com.qualcomm.robotcore.util.RobotLog;
+import com.qualcomm.robotcore.util.SerialNumber;
 import com.qualcomm.robotcore.wifi.NetworkConnectionFactory;
 import com.qualcomm.robotcore.wifi.NetworkType;
 import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
@@ -500,26 +501,58 @@ public class FtcRobotControllerActivity extends Activity {
         // Custom code for hard-coding the configuration files //
         /////////////////////////////////////////////////////////
 
+        final SerialNumber module1Cdim = new SerialNumber("AI02RI69");
+        final SerialNumber module2Cdim = new SerialNumber("AL026CB2");
+
         try {
             final RobotUsbManagerFtdi usbManager;
             usbManager = new RobotUsbManagerFtdi(this);
             final int numberOfConnectedDevices = usbManager.scanForDevices();
             if (numberOfConnectedDevices > 0) {
-                Log.d("RKR", "" + numberOfConnectedDevices + " Device(s) connected to the robot");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(FtcRobotControllerActivity.this, numberOfConnectedDevices + " Device(s) connected to robot controller", Toast.LENGTH_LONG).show();
+                        Toast.makeText(FtcRobotControllerActivity.this, numberOfConnectedDevices + " device(s) connected to robot controller", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                SerialNumber currentSerialNumber;
+
+                for(int i = 0; i < numberOfConnectedDevices; i++) {
+                    currentSerialNumber = usbManager.getDeviceSerialNumberByIndex(i);
+                    if(currentSerialNumber.equals(module1Cdim)) {
+                        //TODO: Use module 1 config
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(FtcRobotControllerActivity.this, "Module 1 detected", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else if(currentSerialNumber.equals(module2Cdim)) {
+                        //TODO: Use module 2 config
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(FtcRobotControllerActivity.this, "Module 2 detected", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(FtcRobotControllerActivity.this, "Couldn't find CDIM from either module", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+
             } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(FtcRobotControllerActivity.this, "No devices found!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(FtcRobotControllerActivity.this, "No devices found, connect and power on your robot!", Toast.LENGTH_LONG).show();
                     }
                 });
-                Log.d("RKR", "Module 1 CDIM not found!");
             }
         } catch (RobotCoreException e) {
             e.printStackTrace();
